@@ -357,13 +357,18 @@ export default function DashboardPage() {
       });
   }, []);
 
-  // Load recent rentals from PHP API — only active/received, max 10
+  // Load recent rentals from PHP API — active + completed (received code), max 10
   useEffect(() => {
     rentalsApi
       .list()
       .then((data) => {
         const visible = data
-          .filter((r) => r.status === "active" || r.status === "success" || r.status === "received")
+          .filter((r) =>
+            r.status === "active"    ||
+            r.status === "success"   ||
+            r.status === "received"  ||
+            r.status === "completed"
+          )
           .slice(0, 10);
         setRecentRentals(visible);
       })
@@ -442,7 +447,12 @@ export default function DashboardPage() {
         await refreshUser();
         const list = await rentalsApi.list();
         const visible = list
-          .filter((r) => r.status === "active" || r.status === "success" || r.status === "received")
+          .filter((r) =>
+            r.status === "active"    ||
+            r.status === "success"   ||
+            r.status === "received"  ||
+            r.status === "completed"
+          )
           .slice(0, 10);
         setRecentRentals(visible);
       } catch { /* non-fatal */ }
