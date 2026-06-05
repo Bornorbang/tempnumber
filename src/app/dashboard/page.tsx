@@ -113,10 +113,12 @@ function RentalRow({
 
   async function handleCancel() {
     if (cancelling || status !== "active") return;
+    // Optimistically mark as cancelled immediately — this stops the poll interval
+    // before any in-flight or next-tick poll can race with the cancel request.
+    setStatus("cancelled");
     setCancelling(true);
     try {
       const data = await rentalsApi.cancel(rental.getatext_id);
-      setStatus("cancelled");
       if (data.refund_ngn > 0) {
         addToast(
           "success",

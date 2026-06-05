@@ -123,10 +123,11 @@ function RentalRow({
 
   async function handleCancel() {
     if (cancelling || status !== "active") return;
+    // Optimistically set cancelled immediately to stop the poll interval before it races
+    setStatus("cancelled");
     setCancelling(true);
     try {
       const data = await rentalsApi.cancel(rental.getatext_id);
-      setStatus("cancelled");
       if (data.refund_ngn > 0) {
         addToast("success", "Cancelled & refunded", `₦${data.refund_ngn.toLocaleString()} returned to wallet`);
         onRefundDetected();

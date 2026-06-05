@@ -1,72 +1,37 @@
-import { NextResponse } from "next/server";
-import {
-  readDB,
-  writeDB,
-  nextId,
-  getBearerToken,
-  getUserFromToken,
-} from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
 
-const NGN_RATE = 1600;
-const NGN_MARGIN = 1000;
+const PHP = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-export async function GET(req: Request) {
-  const token = getBearerToken(req);
-  const user = getUserFromToken(token ?? "");
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const db = readDB();
-  const rentals = db.rentals
-    .filter((r) => r.user_id === user.id)
-    .sort((a, b) => b.id - a.id);
-
-  return NextResponse.json(rentals);
+function forwardAuth(req: NextRequest): string {
+  return req.headers.get("authorization") ?? "";
 }
 
-export async function POST(req: Request) {
-  const token = getBearerToken(req);
-  const user = getUserFromToken(token ?? "");
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const body = await req.json().catch(() => ({})) as Record<string, unknown>;
-  const { id: getatext_id, number, service_name, end_time, price, status } = body;
-
-  if (!getatext_id || !number || !service_name || price === undefined) {
-    return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
+export async function GET(req: NextRequest) {
+  try {
+    const res = await fetch(`${PHP}/rentals/index.php`, {
+      headers: { Authorization: forwardAuth(req) },
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ error: "Failed to fetch rentals" }, { status: 500 });
   }
+}
 
-  const price_usd = Number(price);
-  const price_ngn = Math.ceil(price_usd * NGN_RATE) + NGN_MARGIN;
-
-  const db = readDB();
-  const dbUser = db.users.find((u) => u.id === user.id);
-  if (!dbUser) return NextResponse.json({ error: "User not found." }, { status: 404 });
-
-  if (dbUser.wallet_balance < price_ngn) {
-    return NextResponse.json(
-      { error: `Insufficient balance. Need ₦${price_ngn.toLocaleString()}, have ₦${dbUser.wallet_balance.toLocaleString()}.` },
-      { status: 402 }
-    );
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const res = await fetch(`${PHP}/rentals/index.php`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: forwardAuth(req),
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ error: "Failed to save rental" }, { status: 500 });
   }
-
-  dbUser.wallet_balance = Math.round((dbUser.wallet_balance - price_ngn) * 100) / 100;
-
-  const rental = {
-    id: nextId(db, "rental_id"),
-    user_id: user.id,
-    getatext_id: Number(getatext_id),
-    number: String(number),
-    service_name: String(service_name),
-    end_time: String(end_time ?? ""),
-    price_usd,
-    price_ngn,
-    status: String(status ?? "active"),
-    sms_code: null as string | null,
-    rented_at: new Date().toISOString(),
-  };
-
-  db.rentals.push(rental);
-  writeDB(db);
-
-  return NextResponse.json({ ...rental, new_balance: dbUser.wallet_balance });
 }

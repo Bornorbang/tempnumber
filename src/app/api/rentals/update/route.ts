@@ -1,32 +1,21 @@
-import { NextResponse } from "next/server";
-import { readDB, writeDB, getBearerToken, getUserFromToken } from "@/lib/db";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: Request) {
-  const token = getBearerToken(req);
-  const user = getUserFromToken(token ?? "");
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+const PHP = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-  const body = await req.json().catch(() => ({})) as Record<string, unknown>;
-  const { getatext_id, status, sms_code, end_time } = body;
-
-  if (!getatext_id) {
-    return NextResponse.json({ error: "getatext_id is required." }, { status: 400 });
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const res = await fetch(`${PHP}/rentals/update.php`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: req.headers.get("authorization") ?? "",
+      },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ error: "Failed to update rental" }, { status: 500 });
   }
-
-  const db = readDB();
-  const rental = db.rentals.find(
-    (r) => r.getatext_id === Number(getatext_id) && r.user_id === user.id
-  );
-
-  if (!rental) {
-    return NextResponse.json({ error: "Rental not found." }, { status: 404 });
-  }
-
-  if (status !== undefined) rental.status = String(status);
-  if (sms_code !== undefined) rental.sms_code = sms_code ? String(sms_code) : null;
-  if (end_time !== undefined) rental.end_time = String(end_time);
-
-  writeDB(db);
-
-  return NextResponse.json({ success: true });
 }

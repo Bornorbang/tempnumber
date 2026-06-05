@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PHP = process.env.PHP_API_BASE ?? "http://localhost/tempnumber/api";
+const PHP = process.env.PHP_API_BASE ?? process.env.NEXT_PUBLIC_API_URL ?? "";
 
 function fwd(req: NextRequest): Record<string, string> {
   const auth = req.headers.get("authorization") ?? "";

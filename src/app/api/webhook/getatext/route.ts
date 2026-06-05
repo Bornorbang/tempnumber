@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const PHP = process.env.PHP_API_BASE ?? "http://localhost/tempnumber/api";
+const PHP = process.env.PHP_API_BASE ?? process.env.NEXT_PUBLIC_API_URL ?? "";
 
 /**
  * Getatext sends webhook POSTs here when a code arrives.
