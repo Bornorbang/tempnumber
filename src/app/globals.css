@@ -1,26 +1,76 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode for Tailwind v4 */
+@variant dark (&:where(.dark, .dark *));
+
+/* ── Brand colour palette (overrides Tailwind's green + emerald) ─────────── */
+@theme {
+  --color-green-50:   #f4fbe5;
+  --color-green-100:  #e5f6c9;
+  --color-green-200:  #ccee93;
+  --color-green-300:  #b2e55d;
+  --color-green-400:  #9fd028;
+  --color-green-500:  #8EBE20;
+  --color-green-600:  #75a019;
+  --color-green-700:  #5c8013;
+  --color-green-800:  #44600e;
+  --color-green-900:  #2d4009;
+
+  --color-emerald-50:  #f4fbe5;
+  --color-emerald-100: #e5f6c9;
+  --color-emerald-400: #9fd028;
+  --color-emerald-500: #8EBE20;
+  --color-emerald-600: #75a019;
+  --color-emerald-700: #5c8013;
+  --color-emerald-800: #44600e;
+
+  --font-inter:     'Inter', sans-serif;
+  --font-playfair:  'Playfair Display', serif;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light mode tokens */
+  --bg-page: #f8fafc;
+  --bg-section-alt: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-inner: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --border-color: rgba(0, 0, 0, 0.08);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  /* Dark mode tokens */
+  --bg-page: #0a0f1e;
+  --bg-section-alt: #0d1424;
+  --bg-card: #111827;
+  --bg-card-inner: #1a2235;
+  --text-primary: #ffffff;
+  --text-secondary: #d1d5db;
+  --text-muted: #6b7280;
+  --border-color: rgba(255, 255, 255, 0.08);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-inter), Inter, sans-serif;
 }
+
+/* Headings use Playfair Display */
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-playfair), 'Playfair Display', serif;
+}
+
+/* Logo text helper class */
+.font-display {
+  font-family: var(--font-playfair), 'Playfair Display', serif;
+}
+
+/* Marquee scrolling animation — travel distance set via --marquee-travel on the element */
+@keyframes marquee-rtl {
+  from { transform: translateX(0); }
+  to   { transform: translateX(var(--marquee-travel, -2000px)); }
+}
+

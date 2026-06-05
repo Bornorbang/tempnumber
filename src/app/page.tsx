@@ -1,65 +1,115 @@
-import Image from "next/image";
+﻿import type { Metadata } from "next";
+import Navbar from "@/components/Navbar";
+import Hero from "@/components/Hero";
+import Stats from "@/components/Stats";
+import ServicesAndCountries from "@/components/ServicesAndCountries";
+import HowItWorks from "@/components/HowItWorks";
+import WhyChoose from "@/components/WhyChoose";
+import HomeFAQ from "@/components/HomeFAQ";
+import CTABanner from "@/components/CTABanner";
+import Footer from "@/components/Footer";
+
+export const metadata: Metadata = {
+  title: { absolute: "Buy Temporary USA Phone Numbers & Pay in Naira - Temp Number" },
+  description:
+    "Get a real, non-VOIP USA virtual number for SMS verification instantly. Pay in Naira — no foreign card needed. Supports WhatsApp, Telegram, Gmail & 100+ services. From ₦450.",
+  alternates: { canonical: "https://tempnumber.ng" },
+  openGraph: {
+    title: "Buy Temporary USA Phone Numbers & Pay in Naira - Temp Number",
+    description:
+      "Get a real, non-VOIP USA virtual number for SMS verification instantly. Pay in Naira — no foreign card needed. From ₦450.",
+    url: "https://tempnumber.ng",
+    type: "website",
+  },
+  twitter: {
+    title: "Buy Temporary USA Phone Numbers & Pay in Naira - Temp Number",
+    description:
+      "Real, non-VOIP USA virtual numbers for SMS verification. Pay in Naira. No foreign card. From ₦450.",
+  },
+};
+
+const homePageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Buy Temporary USA Phone Numbers & Pay in Naira - Temp Number",
+  url: "https://tempnumber.ng",
+  description:
+    "Nigeria's leading temporary USA virtual phone number service. Rent a real, non-VOIP USA number for SMS verification and pay in Naira.",
+  breadcrumb: {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://tempnumber.ng" },
+    ],
+  },
+};
+
+const homeFaqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "What is Temp Number?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Temp Number lets you rent real, non-VOIP USA phone numbers for a few minutes. You receive an SMS verification code on it, then the number expires — keeping your personal number private.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How do I get a USA virtual number?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Create an account, top up your wallet in Naira, then choose a service. You'll instantly receive a USA number and any SMS sent to it will appear in your dashboard.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "How much does a temporary USA phone number cost?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Prices vary by service. Most numbers start from ₦450. Check our Pricing page for live prices. There are no subscription fees — you only pay per number you rent.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What if I don't receive an SMS?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "If no SMS arrives within the rental period, your wallet is refunded immediately and automatically. No need to contact support.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Which payment methods are accepted?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "We accept card payments and bank transfers in Nigerian Naira (₦). No dollar card needed.",
+      },
+    },
+  ],
+};
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homePageSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeFaqSchema) }}
+      />
+      <Navbar />
+      <Hero />
+      <Stats />
+      <HowItWorks />
+      <ServicesAndCountries />
+      <WhyChoose />
+      <HomeFAQ />
+      <CTABanner />
+      <Footer />
+    </main>
   );
 }

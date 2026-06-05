@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# standalone (cPanel self-host, not needed for Vercel)
+/server.js
+
 # production
 /build
 
