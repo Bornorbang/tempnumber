@@ -76,9 +76,28 @@ export async function POST(req: NextRequest) {
   const authHeader = req.headers.get("authorization") ?? "";
   const rawToken   = authHeader.replace(/^Bearer\s+/i, "").trim();
 
-  // Verify JWT signature using the same secret as PHP — prevents user_id forgery.
-  const jwtPayload = JWT_SECRET && rawToken ? verifyJWT(rawToken, JWT_SECRET) : null;
-  const userId     = jwtPayload?.sub;
+  // Try local JWT verification first (fast, no network hop).
+  // If JWT_SECRET is missing or mismatched, fall back to asking PHP /auth/me.php
+  // so a JWT_SECRET misconfiguration never blocks a legitimate payment.
+  let userId: number | undefined;
+
+  if (JWT_SECRET && rawToken) {
+    const jwtPayload = verifyJWT(rawToken, JWT_SECRET);
+    userId = jwtPayload?.sub;
+  }
+
+  // Fallback: ask PHP to validate the token when local check fails
+  if (!userId && rawToken && PHP_API) {
+    try {
+      const meRes = await fetch(`${PHP_API}/auth/me.php`, {
+        headers: { Authorization: `Bearer ${rawToken}` },
+      });
+      if (meRes.ok) {
+        const meData = await meRes.json().catch(() => ({})) as { id?: number };
+        if (meData.id) userId = meData.id;
+      }
+    } catch { /* network error — fall through to the error below */ }
+  }
 
   if (!userId) {
     return NextResponse.json(
