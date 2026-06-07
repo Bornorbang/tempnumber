@@ -19,7 +19,7 @@ type Service = {
 const NGN_RATE = 1600;
 
 function usdToResellerNgn(usd: string | number) {
-  return Math.ceil(Number(usd) * NGN_RATE) + 500; // ₦500 margin — cheaper than retail (₦1000)
+  return Math.ceil(Number(usd) * NGN_RATE) + 200; // ₦200 margin — cheaper than retail (₦500)
 }
 
 // ── Pricing plans ─────────────────────────────────────────────────────────────
@@ -28,7 +28,7 @@ const PLANS = [
   {
     name: "Starter Platform",
     tagline: "Everything you need to launch your own SMS verification business.",
-    price: "₦700,000",
+    price: "₦500,000",
     priceNote: "One-time setup fee",
     badge: "Most Popular",
     highlight: false,
@@ -49,12 +49,12 @@ const PLANS = [
     ],
     notIncluded: [],
     cta: "Get Started",
-    ctaHref: "https://wa.me/2349160421899?text=Hi%2C%20I%27m%20interested%20in%20the%20Starter%20Platform%20(%E2%82%A6700%2C000).%20Please%20provide%20more%20details.",
+    ctaHref: "https://wa.me/2349160421899?text=Hi%2C%20I%27m%20interested%20in%20the%20Starter%20Platform%20(%E2%82%A6500%2C000).%20Please%20provide%20more%20details.",
   },
   {
     name: "Pro Platform",
     tagline: "A full-featured, revenue-ready platform built to scale your business.",
-    price: "₦1,200,000",
+    price: "₦700,000",
     priceNote: "One-time setup fee",
     badge: "Best Value",
     highlight: true,
@@ -74,7 +74,7 @@ const PLANS = [
     ],
     notIncluded: [],
     cta: "Contact Us",
-    ctaHref: "https://wa.me/2349160421899?text=Hi%2C%20I%27m%20interested%20in%20the%20Pro%20Platform%20(%E2%82%A61%2C200%2C000).%20Please%20provide%20more%20details.",
+    ctaHref: "https://wa.me/2349160421899?text=Hi%2C%20I%27m%20interested%20in%20the%20Pro%20Platform%20(%E2%82%A6700%2C000).%20Please%20provide%20more%20details.",
   },
 ];
 

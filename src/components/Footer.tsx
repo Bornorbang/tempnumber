@@ -92,10 +92,7 @@ export default function Footer() {
 
         <div className="pt-6 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-slate-400 dark:text-gray-500 text-xs">
-            © {new Date().getFullYear()} Temp Number. All rights reserved.
-          </p>
-          <p className="text-slate-400 dark:text-gray-500 text-xs">
-            Made with ❤️ by{" "}
+            © {new Date().getFullYear()} Temp Number by{" "}
             <a
               href="https://hostingnigeria.com"
               target="_blank"
@@ -104,6 +101,7 @@ export default function Footer() {
             >
               Hosting Nigeria
             </a>
+            . All rights reserved.
           </p>
         </div>
       </div>

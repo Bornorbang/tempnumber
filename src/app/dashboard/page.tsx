@@ -34,7 +34,7 @@ type RentResult = {
 const NGN_RATE = 1600;
 
 function usdToNgn(usd: string | number) {
-  return (Math.ceil(Number(usd) * NGN_RATE) + 1000).toLocaleString();
+  return (Math.ceil(Number(usd) * NGN_RATE) + 500).toLocaleString();
 }
 
 // ── Rental row with live TTL, code polling, and cancel ───────────────────────
@@ -413,7 +413,7 @@ export default function DashboardPage() {
     if (rentingService) return;
 
     // Client-side balance check — stops obvious low-balance attempts before any network call
-    const costNgn = Math.ceil(Number(s.price) * NGN_RATE) + 1000;
+    const costNgn = Math.ceil(Number(s.price) * NGN_RATE) + 500;
     if (user && user.wallet_balance < costNgn) {
       addToast("error", "Low balance", "Please top up wallet.");
       return;

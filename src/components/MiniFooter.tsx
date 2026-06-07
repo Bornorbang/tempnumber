@@ -2,7 +2,7 @@ export default function MiniFooter({ className = "" }: { className?: string }) {
   return (
     <footer className={`text-center py-3 border-t border-[var(--border-color)] ${className}`}>
       <p className="text-gray-500 text-[11px]">
-        &copy; {new Date().getFullYear()} Temp Number. All rights reserved. &nbsp;Made with &#10084;&#65039; by{" "}
+        &copy; {new Date().getFullYear()} Temp Number by{" "}
         <a
           href="https://hostingnigeria.com"
           target="_blank"
@@ -11,6 +11,7 @@ export default function MiniFooter({ className = "" }: { className?: string }) {
         >
           Hosting Nigeria
         </a>
+        . All rights reserved.
       </p>
     </footer>
   );

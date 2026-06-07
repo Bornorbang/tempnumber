@@ -10,7 +10,7 @@ const BASE_URL = process.env.GETATEXT_BASE_URL ?? "https://getatext.com";
 export const NGN_RATE = 1600;
 
 export function usdToNgn(usd: number | string): number {
-  return Math.ceil(Number(usd) * NGN_RATE) + 1000;
+  return Math.ceil(Number(usd) * NGN_RATE) + 500;
 }
 
 export async function getatextFetch(

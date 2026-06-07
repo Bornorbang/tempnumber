@@ -13,6 +13,7 @@ export default function SignUpPage() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const { register, loginWithGoogle } = useAuth();
   const router = useRouter();
 
@@ -40,7 +41,7 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-page)] flex">
       {/* Left branding panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0a0f1e] via-[#0d1a2e] to-[#0a1a10] flex-col justify-between p-12 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0a0f1e] via-[#0d1a2e] to-[#0a1a10] flex-col justify-start gap-12 p-12 relative overflow-hidden">
         <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-green-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-56 h-56 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -75,11 +76,6 @@ export default function SignUpPage() {
             ))}
           </div>
         </div>
-
-        <p className="text-white/40 text-xs relative">
-          © {new Date().getFullYear()} Temp Number. Made with ❤️ by{" "}
-          <a href="https://hostingnigeria.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white underline transition-colors">Hosting Nigeria</a>
-        </p>
       </div>
 
       {/* Right form panel */}
@@ -170,12 +166,21 @@ export default function SignUpPage() {
               )}
             </div>
 
-            <p className="text-slate-400 dark:text-gray-500 text-xs">
-              By creating an account you agree to our{" "}
-              <Link href="#" className="text-green-600 dark:text-green-400 hover:underline">Terms of Service</Link>{" "}
-              and{" "}
-              <Link href="#" className="text-green-600 dark:text-green-400 hover:underline">Privacy Policy</Link>.
-            </p>
+            <label className="flex items-start gap-2.5 cursor-pointer">
+              <input
+                type="checkbox"
+                required
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="mt-0.5 w-4 h-4 accent-green-500 flex-shrink-0 cursor-pointer"
+              />
+              <span className="text-slate-400 dark:text-gray-500 text-xs">
+                I agree to the{" "}
+                <Link href="/legal/terms" className="text-green-600 dark:text-green-400 hover:underline">Terms of Service</Link>{" "}
+                and{" "}
+                <Link href="/legal/privacy" className="text-green-600 dark:text-green-400 hover:underline">Privacy Policy</Link>.
+              </span>
+            </label>
 
             {error && (
               <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-sm rounded-xl px-4 py-3">
@@ -185,7 +190,7 @@ export default function SignUpPage() {
 
             <button
               type="submit"
-              disabled={loading || !passwordsMatch}
+              disabled={loading || !passwordsMatch || !agreedToTerms}
               className="w-full bg-green-500 hover:bg-green-400 disabled:bg-green-500/60 text-white font-semibold py-3 rounded-xl text-sm transition-all hover:shadow-lg hover:shadow-green-500/25 flex items-center justify-center gap-2"
             >
               {loading ? (

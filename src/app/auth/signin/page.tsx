@@ -34,7 +34,7 @@ export default function SignInPage() {
   return (
     <div className="min-h-screen bg-[var(--bg-page)] flex">
       {/* Left panel — branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0a0f1e] via-[#0d1a2e] to-[#0a1a10] flex-col justify-between p-12 relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0a0f1e] via-[#0d1a2e] to-[#0a1a10] flex-col justify-start gap-12 p-12 relative overflow-hidden">
         {/* Glow blobs */}
         <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-green-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/4 w-56 h-56 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -70,10 +70,6 @@ export default function SignInPage() {
           </div>
         </div>
 
-        <p className="text-white/40 text-xs relative">
-          © {new Date().getFullYear()} Temp Number. Made with ❤️ by{" "}
-          <a href="https://hostingnigeria.com" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-white underline transition-colors">Hosting Nigeria</a>
-        </p>
       </div>
 
       {/* Right panel — form */}
