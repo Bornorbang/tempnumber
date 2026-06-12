@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import GoogleAuthProvider from "@/components/GoogleAuthProvider";
+import WhatsAppWidget from "@/components/WhatsAppWidget";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -20,7 +22,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   metadataBase: new URL("https://tempnumber.ng"),
   title: {
-    default: "Buy Temporary USA Phone Numbers & Pay in Naira - Temp Number",
+    default: "Buy Temporary USA Phone Numbers in Naira - Temp Number",
     template: "%s - Temp Number",
   },
   description:
@@ -72,6 +74,12 @@ export const metadata: Metadata = {
     site: "@Tempnumber_ng",
     creator: "@Tempnumber_ng",
     images: ["/og-image.png"],
+  },
+  icons: {
+    icon: [
+      { url: "/updated-logo.png", type: "image/png" },
+    ],
+    apple: "/updated-logo.png",
   },
 };
 
@@ -127,6 +135,18 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-L71N9E4725"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-L71N9E4725');
+          `}
+        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
@@ -139,6 +159,7 @@ export default function RootLayout({
           <GoogleAuthProvider>
             <AuthProvider>{children}</AuthProvider>
           </GoogleAuthProvider>
+          <WhatsAppWidget />
         </ThemeProvider>
       </body>
     </html>

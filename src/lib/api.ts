@@ -57,6 +57,7 @@ export type User = {
   email: string;
   wallet_balance: number;
   is_admin?: boolean;
+  is_disabled?: boolean;
 };
 
 export type AuthResponse = { token: string; user: User };
@@ -160,4 +161,121 @@ export type TopupRecord = {
 export const walletApi = {
   balance: () => apiFetch<{ balance: number }>("/wallet/index.php"),
   topups: () => apiFetch<TopupRecord[]>("/wallet/topups.php"),
+};
+
+// ── Long-Term Rentals ─────────────────────────────────────────────────────────
+
+export type LongRentalPeriodPrice = { period: string; cost: string; price_ngn: number };
+export type LongRentalService     = { service_name: string; api_name: string; prices: LongRentalPeriodPrice[] };
+
+export type LongRental = {
+  id: number;
+  getatext_id: number;
+  number: string;
+  service_name: string;
+  api_name: string;
+  period: string;
+  price_usd: number;
+  price_ngn: number;
+  status: string;
+  end_time: string;
+  auto_renew: boolean;
+  rented_at: string;
+};
+
+export type LongRentalMessage = {
+  message: string;
+  sender: string;
+  received_at: string;
+  number: string;
+  service_name?: string;
+};
+
+export const longRentalsApi = {
+  prices: () =>
+    apiFetch<{ services: LongRentalService[] }>("/long-rentals/prices.php"),
+
+  list: () =>
+    apiFetch<LongRental[]>("/long-rentals/index.php"),
+
+  create: (data: { service: string; period: string; auto_renew: boolean; price_usd: number; price_ngn: number }) =>
+    apiFetch<{ rental: LongRental; price_ngn: number; new_balance: number }>("/long-rentals/index.php", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  cancel: (number: string, service?: string) =>
+    apiFetch<{ status: string }>("/long-rentals/cancel.php", {
+      method: "POST",
+      body: JSON.stringify({ number, ...(service ? { service } : {}) }),
+    }),
+
+  renew: (number: string, service?: string) =>
+    apiFetch<{ rental: LongRental; new_balance: number }>("/long-rentals/renew.php", {
+      method: "POST",
+      body: JSON.stringify({ number, ...(service ? { service } : {}) }),
+    }),
+
+  messages: (number: string, service?: string) =>
+    apiFetch<{ messages: LongRentalMessage[] }>(
+      `/long-rentals/messages.php?number=${encodeURIComponent(number)}${service ? `&service=${encodeURIComponent(service)}` : ""}`
+    ),
+
+  setAutoRenew: (number: string, autoRenew: boolean, service?: string) =>
+    apiFetch<{ auto_renew: boolean }>("/long-rentals/auto-renew.php", {
+      method: "POST",
+      body: JSON.stringify({ number, auto_renew: autoRenew, ...(service ? { service } : {}) }),
+    }),
+};
+
+// ── Dedicated Rentals ─────────────────────────────────────────────────────────
+
+export type DedicatedPrice = {
+  period: string;
+  label: string;
+  price_usd: number;
+  price_ngn: number;
+};
+
+export type DedicatedRental = {
+  id: number;
+  getatext_id: number;
+  number: string;
+  period: string;
+  price_usd: number;
+  price_ngn: number;
+  status: string;
+  end_time: string;
+  auto_renew: boolean;
+  rented_at: string;
+};
+
+export type DedicatedMessage = {
+  message: string;
+  number: string;
+  sender: string;
+  rented_at: string;
+};
+
+export const dedicatedApi = {
+  prices: () =>
+    apiFetch<{ prices: DedicatedPrice[]; stock: number }>("/dedicated/prices.php"),
+
+  list: () =>
+    apiFetch<DedicatedRental[]>("/dedicated/index.php"),
+
+  create: (data: { rental_time: string; auto_renew: boolean; price_usd: number; price_ngn: number }) =>
+    apiFetch<{ rental: DedicatedRental; price_ngn: number; new_balance: number }>("/dedicated/index.php", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  update: (data: { id: number; action: "renew" | "cancel" | "toggle_auto_renew"; auto_renew?: boolean }) =>
+    apiFetch<{ rental?: DedicatedRental; new_balance?: number; status?: string; auto_renew?: boolean }>("/dedicated/update.php", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  messages: (gtId: number) =>
+    apiFetch<{ messages: DedicatedMessage[] }>(`/dedicated/messages.php?id=${gtId}`),
 };

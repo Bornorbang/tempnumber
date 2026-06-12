@@ -40,7 +40,7 @@ function AnimatedStat({
 }
 
 const STATS = [
-  { end: 50, suffix: "+", decimals: 0, label: "Services Supported" },
+  { end: 50, suffix: "+", decimals: 0, label: "Services" },
   { end: 1, suffix: "M+", decimals: 0, label: "Numbers Available" },
   { end: 50, suffix: "M+", decimals: 0, label: "SMS Delivered" },
   { end: 99.9, suffix: "%", decimals: 1, label: "Uptime" },

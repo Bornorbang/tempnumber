@@ -8,12 +8,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import MiniFooter from "@/components/MiniFooter";
 
 const ADMIN_NAV = [
-  { label: "Overview",       href: "/admin",                  exact: true  },
-  { label: "Users",          href: "/admin/users",            exact: false },
-  { label: "Announcements",  href: "/admin/announcements",    exact: false },
-  { label: "Updates",        href: "/admin/updates",          exact: false },
-  { label: "Wallet History", href: "/admin/wallet-history",   exact: false },
-  { label: "Rental History", href: "/admin/rentals",          exact: false },
+  { label: "Overview",         href: "/admin",                   exact: true  },
+  { label: "Users",            href: "/admin/users",             exact: false },
+  { label: "Announcements",    href: "/admin/announcements",     exact: false },
+  { label: "Updates",          href: "/admin/updates",           exact: false },
+  { label: "Wallet History",   href: "/admin/wallet-history",    exact: false },
+  { label: "Rental History",   href: "/admin/rentals",           exact: false },
+  { label: "Long-Term Rentals",href: "/admin/long-rentals",      exact: false },
+  { label: "Dedicated Numbers",href: "/admin/dedicated",          exact: false },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

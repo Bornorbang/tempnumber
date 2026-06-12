@@ -10,19 +10,19 @@ import CTABanner from "@/components/CTABanner";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: { absolute: "Buy Temporary USA Phone Numbers & Pay in Naira - Temp Number" },
+  title: { absolute: "Buy Temporary USA Phone Numbers in Naira - Temp Number" },
   description:
     "Get a real, non-VOIP USA virtual number for SMS verification instantly. Pay in Naira — no foreign card needed. Supports WhatsApp, Telegram, Gmail & 100+ services. From ₦450.",
   alternates: { canonical: "https://tempnumber.ng" },
   openGraph: {
-    title: "Buy Temporary USA Phone Numbers & Pay in Naira - Temp Number",
+    title: "Buy Temporary USA Phone Numbers in Naira - Temp Number",
     description:
       "Get a real, non-VOIP USA virtual number for SMS verification instantly. Pay in Naira — no foreign card needed. From ₦450.",
     url: "https://tempnumber.ng",
     type: "website",
   },
   twitter: {
-    title: "Buy Temporary USA Phone Numbers & Pay in Naira - Temp Number",
+    title: "Buy Temporary USA Phone Numbers in Naira - Temp Number",
     description:
       "Real, non-VOIP USA virtual numbers for SMS verification. Pay in Naira. No foreign card. From ₦450.",
   },
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 const homePageSchema = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  name: "Buy Temporary USA Phone Numbers & Pay in Naira - Temp Number",
+  name: "Buy Temporary USA Phone Numbers in Naira - Temp Number",
   url: "https://tempnumber.ng",
   description:
     "Nigeria's leading temporary USA virtual phone number service. Rent a real, non-VOIP USA number for SMS verification and pay in Naira.",

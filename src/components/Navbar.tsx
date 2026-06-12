@@ -7,11 +7,11 @@ import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 
 const NAV_LINKS = [
-  { label: "Home",     href: "/" },
-  { label: "Pricing",  href: "/pricing" },
-  { label: "Resellers", href: "/reseller" },
-  { label: "FAQ",      href: "/faq" },
-  { label: "Contact",  href: "/contact" },
+  { label: "Home",              href: "/" },
+  { label: "Pricing",           href: "/pricing" },
+  { label: "Long-term Rentals", href: "/long-term-rentals" },
+  { label: "Dedicated Numbers", href: "/dedicated-numbers" },
+  { label: "Resellers",         href: "/reseller" },
 ];
 
 export default function Navbar() {

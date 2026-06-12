@@ -34,7 +34,7 @@ type RentResult = {
 const NGN_RATE = 1600;
 
 function usdToNgn(usd: string | number) {
-  return (Math.ceil(Number(usd) * NGN_RATE) + 500).toLocaleString();
+  return (Math.ceil(Number(usd) * NGN_RATE) + 700).toLocaleString();
 }
 
 // ── Rental row with live TTL, code polling, and cancel ───────────────────────
@@ -309,6 +309,7 @@ export default function DashboardPage() {
   const [toasts, setToasts]                 = useState<Toast[]>([]);
   const [toastSeq, setToastSeq]             = useState(0);
   const [favorites, setFavorites]           = useState<Set<string>>(new Set());
+  const [showDisabledModal, setShowDisabledModal] = useState(false);
   const autoRentDone                        = useRef(false);
 
   // Load favorites from localStorage
@@ -412,8 +413,22 @@ export default function DashboardPage() {
   async function handleRent(s: Service) {
     if (rentingService) return;
 
+    if (user?.is_disabled) {
+      setShowDisabledModal(true);
+      return;
+    }
+
+    // Active rental limit — only count rentals still waiting for a code
+    const activeCount = recentRentals.filter((r) =>
+      r.status === "active" || r.status === "success"
+    ).length;
+    if (activeCount >= 3) {
+      addToast("error", "Rental limit reached", "You have 3 active rentals. Wait for them to complete before renting another.");
+      return;
+    }
+
     // Client-side balance check — stops obvious low-balance attempts before any network call
-    const costNgn = Math.ceil(Number(s.price) * NGN_RATE) + 500;
+    const costNgn = Math.ceil(Number(s.price) * NGN_RATE) + 700;
     if (user && user.wallet_balance < costNgn) {
       addToast("error", "Low balance", "Please top up wallet.");
       return;
@@ -695,6 +710,21 @@ export default function DashboardPage() {
       </div>
 
     </div>
+
+    {/* Disabled account modal */}
+    {showDisabledModal && (
+      <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setShowDisabledModal(false)}>
+        <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-6 w-full max-w-sm shadow-2xl text-center" onClick={(e) => e.stopPropagation()}>
+          <div className="w-14 h-14 rounded-full bg-red-500/15 flex items-center justify-center mx-auto mb-4">
+            <svg className="w-7 h-7 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+            </svg>
+          </div>
+          <h2 className="text-[var(--text-primary)] font-bold text-lg mb-2">Account Disabled</h2>
+          <p className="text-gray-400 text-sm">Your account has been disabled. Please contact our support team to resolve this.</p>
+        </div>
+      </div>
+    )}
     </>
   );
 }

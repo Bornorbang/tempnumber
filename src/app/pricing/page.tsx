@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 
 const NGN_RATE = 1600;
 function usdToNgn(usd: string | number) {
-  return (Math.ceil(Number(usd) * NGN_RATE) + 500).toLocaleString();
+  return (Math.ceil(Number(usd) * NGN_RATE) + 700).toLocaleString();
 }
 
 type Service = {

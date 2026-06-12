@@ -3,15 +3,17 @@ import Image from "next/image";
 
 const LINKS = {
   Product: [
-    { label: "Home", href: "/" },
-    { label: "Pricing", href: "/pricing" },
-    { label: "Resellers", href: "/reseller" },
+    { label: "Home",               href: "/" },
+    { label: "Pricing",            href: "/pricing" },
+    { label: "Long-term Rentals",  href: "/long-term-rentals" },
+    { label: "Dedicated Numbers",  href: "/dedicated-numbers" },
+    { label: "Resellers",          href: "/reseller" },
   ],
   Support: [
-    { label: "FAQ", href: "/faq" },
-    { label: "Contact Us", href: "/contact" },
+    { label: "FAQ",              href: "/faq" },
+    { label: "Join Channel",     href: "https://whatsapp.com/channel/0029Vb7uTgC30LKUfBRj3p2L" },
     { label: "Terms of Service", href: "/legal/terms" },
-    { label: "Privacy Policy", href: "/legal/privacy" },
+    { label: "Privacy Policy",   href: "/legal/privacy" },
   ],
 };
 

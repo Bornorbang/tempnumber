@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
-const PRESETS = [5_000, 7_000, 10_000, 15_000, 20_000];
+const PRESETS = [5_000, 10_000, 15_000, 20_000, 50_000];
 
 function fmt(n: number) {
   return n.toLocaleString("en-NG");
@@ -102,12 +102,12 @@ export default function WalletPage() {
         </div>
 
         {/* Presets */}
-        <div className="flex gap-2 mb-5">
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 mb-5">
           {PRESETS.map((p) => (
             <button
               key={p}
               onClick={() => selectPreset(p)}
-              className={`flex-1 text-xs font-semibold py-2 rounded-lg border transition-all ${
+              className={`text-xs font-semibold py-2.5 rounded-lg border transition-all ${
                 active === p
                   ? "bg-green-500 border-green-500 text-white"
                   : "border-[var(--border-color)] text-[var(--text-secondary)] hover:border-green-500 hover:text-green-500"

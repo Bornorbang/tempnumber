@@ -123,10 +123,10 @@ function AnimatedStat({ end, suffix }: { end: number; suffix: string }) {
 }
 
 const RESELLER_STATS = [
-  { end: 100, suffix: "+", label: "Services Supported" },
-  { end: 50, suffix: "+", label: "Services Supported" },
+  { end: 100, suffix: "+", label: "Services" },
+  { end: 50, suffix: "+", label: "Countries" },
   { end: 7, suffix: "", label: "Days to Launch" },
-  { end: 100, suffix: "%", label: "Profit Yours to Keep" },
+  { end: 100, suffix: "%", label: "Keep Profits" },
 ];
 
 // ── Why Build features ────────────────────────────────────────────────────────
@@ -262,13 +262,13 @@ export default function ResellerPage() {
         {/* ── Stats bar ── */}
         <section className="bg-slate-50 dark:bg-[#0a0f1e] border-y border-slate-200 dark:border-white/10 py-10">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-4 gap-3">
               {RESELLER_STATS.map((s) => (
                 <div key={s.label} className="text-center">
-                  <div className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-1">
+                  <div className="text-xl sm:text-3xl font-bold text-slate-900 dark:text-white mb-1">
                     <AnimatedStat end={s.end} suffix={s.suffix} />
                   </div>
-                  <div className="text-slate-500 dark:text-gray-400 text-sm">{s.label}</div>
+                  <div className="text-slate-500 dark:text-gray-400 text-[10px] sm:text-sm leading-tight">{s.label}</div>
                 </div>
               ))}
             </div>
@@ -494,7 +494,7 @@ export default function ResellerPage() {
 
             <p className="text-center text-gray-400 text-xs mt-6">
               Not sure which plan is right for you?{" "}
-              <a href="mailto:support@tempnumber.ng" className="text-green-500 hover:underline">
+              <a href="https://wa.me/2349160421899?text=Hi%2C%20I%27d%20like%20help%20choosing%20a%20reseller%20plan." target="_blank" rel="noopener noreferrer" className="text-green-500 hover:underline">
                 Send us a message
               </a>{" "}
               and we&apos;ll help you decide.
@@ -545,7 +545,9 @@ export default function ResellerPage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <a
-                    href="mailto:support@tempnumber.ng?subject=I want to build my SMS verification platform"
+                    href="https://wa.me/2349160421899?text=Hi%2C%20I%20want%20to%20build%20my%20SMS%20verification%20platform.%20Please%20send%20me%20a%20project%20timeline."
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="bg-white text-green-600 font-semibold px-7 py-3 rounded-xl text-sm hover:bg-green-50 transition-colors"
                   >
                     Contact Us

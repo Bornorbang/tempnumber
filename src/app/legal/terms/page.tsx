@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
-const LAST_UPDATED = "1 June 2025";
+const LAST_UPDATED = "12 June 2026";
 
 export default function TermsPage() {
   return (
@@ -66,19 +66,94 @@ export default function TermsPage() {
 
             <Section title="3. Description of Service">
               <p>
-                Temp Number provides access to temporary virtual phone numbers from over 100 countries.
-                These numbers can receive SMS messages, typically for one-time password (OTP) or account
-                verification purposes. Numbers are provisioned through third-party telephony APIs and are
-                subject to their availability.
+                Temp Number provides access to virtual phone numbers that can receive SMS messages,
+                typically for one-time password (OTP) or account verification purposes. We offer three
+                product tiers:
               </p>
               <ul>
-                <li>Numbers are rented for a limited duration (typically 5–30 minutes per session).</li>
+                <li>
+                  <strong>Standard Rentals</strong> — temporary numbers rented for a short session
+                  (typically 5–30 minutes). Numbers may be shared across customers and are not exclusively
+                  assigned.
+                </li>
+                <li>
+                  <strong>Long-Term Rentals</strong> — a number tied to a specific service (e.g.
+                  WhatsApp, Telegram) for 1–30 days.
+                </li>
+                <li>
+                  <strong>Dedicated Numbers</strong> — a personal USA phone number assigned exclusively
+                  to you for 1 week, 2 weeks, or 1 month. Works with all services simultaneously.
+                </li>
+              </ul>
+              <ul>
                 <li>We do not guarantee that a specific service or country will always be available.</li>
                 <li>SMS delivery depends on the originating platform and is not guaranteed.</li>
+                <li>Numbers are provisioned through third-party telephony APIs and subject to their availability.</li>
+              </ul>
+            </Section>
+
+            <Section title="3b. Long-Term Rentals">
+              <p>
+                Long-Term Rentals assign a virtual phone number to a specific service (e.g. WhatsApp,
+                Telegram) for an extended period (1 day to 30 days). By renting a long-term number, you
+                agree to the following additional terms:
+              </p>
+              <ul>
                 <li>
-                  Numbers may be reused across multiple customers and are not exclusively assigned to any
-                  individual.
+                  <strong>No cancellations or refunds.</strong> Long-term rentals are non-cancellable and
+                  non-refundable once confirmed. The full rental cost is deducted from your wallet at the
+                  time of rental.
                 </li>
+                <li>
+                  <strong>Auto-renew.</strong> If you enable auto-renew, your wallet will be charged the
+                  same rental price automatically before the number expires. If your wallet balance is
+                  insufficient at renewal time, auto-renew will be disabled and the number will expire.
+                  You can turn auto-renew on or off at any time from your dashboard.
+                </li>
+                <li>
+                  <strong>Manual renewal.</strong> You may also manually renew an active rental at any
+                  time from your dashboard. The renewal cost will be deducted from your wallet.
+                </li>
+                <li>
+                  <strong>Availability.</strong> Long-term number availability depends on pool stock.
+                  We do not guarantee availability for any specific service or period.
+                </li>
+                <li>SMS delivery to your long-term number is not guaranteed and depends on the originating platform.</li>
+              </ul>
+            </Section>
+
+            <Section title="3c. Dedicated Numbers">
+              <p>
+                Dedicated Numbers give you a personal USA phone number assigned exclusively to you for a
+                fixed rental period (1 week, 2 weeks, or 1 month). Unlike long-term rentals, a dedicated
+                number is not tied to a single service — it can receive SMS and calls from any platform
+                simultaneously. By renting a dedicated number, you agree to the following additional terms:
+              </p>
+              <ul>
+                <li>
+                  <strong>Exclusive assignment.</strong> Your dedicated number is reserved solely for you
+                  for the duration of the rental and will not be shared with other users.
+                </li>
+                <li>
+                  <strong>Non-cancellable.</strong> Dedicated number rentals cannot be cancelled and no
+                  refund is issued once the number has been activated, except where the number cannot be
+                  provisioned due to a technical failure on our part.
+                </li>
+                <li>
+                  <strong>Auto-renew.</strong> If you enable auto-renew, your wallet will be charged the
+                  same amount before the number’s expiry. If your balance is insufficient, auto-renew will
+                  be disabled and the number permanently released. You can toggle auto-renew at any time
+                  from your dashboard.
+                </li>
+                <li>
+                  <strong>Permanent release on expiry.</strong> Once a dedicated number expires and is not
+                  renewed, it is permanently released and cannot be recovered.
+                </li>
+                <li>
+                  <strong>Availability.</strong> Dedicated numbers are subject to stock. We do not guarantee
+                  availability at any given time.
+                </li>
+                <li>SMS delivery is not guaranteed and depends on the originating platform.</li>
               </ul>
             </Section>
 
@@ -109,8 +184,8 @@ export default function TermsPage() {
                   required by applicable law.
                 </li>
                 <li>
-                  Charges for a number rental are deducted from your wallet at the time of rental. If your
-                  balance is insufficient, the rental will not proceed.
+                  Charges for a rental are deducted from your wallet at the time of rental. If your balance
+                  is insufficient, the rental will not proceed.
                 </li>
                 <li>
                   We are not responsible for failed SMS deliveries once a number has been successfully
@@ -119,6 +194,12 @@ export default function TermsPage() {
                 <li>
                   Prices displayed are in NGN and are subject to change. Current prices are always shown
                   before you confirm a rental.
+                </li>
+                <li>
+                  <strong>Admin adjustments.</strong> Temp Number administrators may credit or debit your
+                  wallet balance at their discretion, for example to resolve disputes, apply promotional
+                  credits, or correct billing errors. All such adjustments are logged and visible in your
+                  account history.
                 </li>
               </ul>
             </Section>
@@ -130,11 +211,20 @@ export default function TermsPage() {
               </p>
               <ul>
                 <li>
-                  A number was successfully rented but no SMS was received within the rental window due to
-                  a confirmed technical issue on our part.
+                  A standard number was successfully rented but no SMS was received within the rental
+                  window due to a confirmed technical issue on our part.
                 </li>
                 <li>A duplicate charge occurred on your account due to a technical error.</li>
+                <li>
+                  A dedicated number was charged but could not be provisioned due to a technical failure
+                  on our side (e.g. the number was not assigned by our provider).
+                </li>
               </ul>
+              <p>
+                Long-term rentals and dedicated number rentals are <strong>non-refundable</strong> once
+                successfully activated, including in cases where the number expires unused or auto-renew
+                is disabled due to insufficient balance.
+              </p>
               <p>
                 All refund requests must be submitted within 24 hours of the transaction and include your
                 transaction reference. Contact us at{" "}

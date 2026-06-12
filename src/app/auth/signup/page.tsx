@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import MiniFooter from "@/components/MiniFooter";
 import { GoogleLogin } from "@react-oauth/google";
@@ -16,6 +16,8 @@ export default function SignUpPage() {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const { register, loginWithGoogle } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") ?? "/dashboard";
 
   function update(field: string, value: string) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -28,7 +30,7 @@ export default function SignUpPage() {
     setError(null);
     try {
       await register(form.name, form.email, form.password);
-      router.push("/dashboard");
+      router.push(redirectTo);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Registration failed. Please try again.");
     } finally {
@@ -220,7 +222,7 @@ export default function SignUpPage() {
             onSuccess={async (cred) => {
               try {
                 await loginWithGoogle(cred.credential ?? "");
-                router.push("/dashboard");
+                router.push(redirectTo);
               } catch (err) {
                 setError(err instanceof Error ? err.message : "Google sign-up failed. Please try again.");
               }

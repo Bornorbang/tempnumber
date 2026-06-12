@@ -12,15 +12,25 @@ const AVATAR_URL =
   "https://img.magnific.com/premium-vector/male-face-avatar-icon-set-flat-design-social-media-profiles_1281173-3806.jpg?semt=ais_hybrid&w=740&q=80";
 
 const NAV = [
-  { label: "Home",          href: "/dashboard",               exact: true  },
-  { label: "Rentals",       href: "/dashboard/rentals",       exact: false },
-  { label: "Wallet",        href: "/dashboard/wallet",        exact: false },
-  { label: "History",       href: "/dashboard/history",       exact: false },
-  { label: "Announcements", href: "/dashboard/announcements", exact: false },
-  { label: "Reseller",      href: "/reseller",                exact: false },
+  { label: "Home",             href: "/dashboard",             exact: true  },
+  { label: "Rentals",          href: "/dashboard/rentals",     exact: false },
+  { label: "Long-term Rentals",href: "/dashboard/long-term",   exact: false },
+  { label: "Dedicated Numbers",href: "/dashboard/dedicated",   exact: false },
+  { label: "Wallet",           href: "/dashboard/wallet",      exact: false },
+  { label: "History",          href: "/dashboard/history",     exact: false },
+  { label: "Announcements",    href: "/dashboard/announcements",exact: false },
+  { label: "Reseller",         href: "/reseller",              exact: false },
 ];
 
-const BOTTOM_NAV = NAV.slice(0, 5);
+const SIDEBAR_NAV = NAV.filter((item) => item.label !== "Announcements");
+const HAMBURGER_NAV = NAV.filter((item) => item.label !== "Announcements");
+const BOTTOM_NAV = [
+  { label: "Home",      href: "/dashboard",           exact: true  },
+  { label: "Rentals",   href: "/dashboard/rentals",   exact: false },
+  { label: "Wallet",    href: "/dashboard/wallet",    exact: false },
+  { label: "Long-term", href: "/dashboard/long-term", exact: false },
+  { label: "Dedicated",  href: "/dashboard/dedicated", exact: false },
+];
 
 // ── Icons for bottom mobile nav only ─────────────────────────────────────────
 const NAV_ICONS: Record<string, (active: boolean) => React.ReactNode> = {
@@ -42,6 +52,16 @@ const NAV_ICONS: Record<string, (active: boolean) => React.ReactNode> = {
   History: (a) => (
     <svg className={`w-5 h-5 ${a ? "text-green-400" : "text-gray-500"}`} fill={a ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  "Long-term": (a) => (
+    <svg className={`w-5 h-5 ${a ? "text-green-400" : "text-gray-500"}`} fill={a ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+  ),
+  Dedicated: (a) => (
+    <svg className={`w-5 h-5 ${a ? "text-green-400" : "text-gray-500"}`} fill={a ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
     </svg>
   ),
   Announcements: (a) => (
@@ -71,6 +91,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       "/dashboard/rentals":       "Rentals",
       "/dashboard/wallet":        "Wallet",
       "/dashboard/history":       "History",
+      "/dashboard/long-term":     "Long-Term Rentals",
+      "/dashboard/dedicated":      "Dedicated Numbers",
       "/dashboard/announcements": "Announcements",
       "/dashboard/profile":       "Profile",
     };
@@ -132,14 +154,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* ── Desktop Sidebar ── */}
       <aside className="hidden lg:flex flex-col fixed inset-y-0 left-0 w-56 bg-[var(--bg-section-alt)] border-r border-[var(--border-color)] z-40">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 px-5 py-5 border-b border-[var(--border-color)] hover:opacity-80 transition-opacity">
+        <Link href="/dashboard" className="flex items-center gap-2.5 px-5 py-5 border-b border-[var(--border-color)] hover:opacity-80 transition-opacity">
           <Image src="/updated-logo.png" alt="Temp Number" width={28} height={28} className="w-7 h-7" />
           <span className="text-[var(--text-primary)] font-semibold text-sm font-display">Temp Number</span>
         </Link>
 
         {/* Navigation — text only, no icons */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-          {NAV.map((item) => {
+          {SIDEBAR_NAV.map((item) => {
             const active = isActive(item);
             return (
               <Link
@@ -155,6 +177,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </Link>
             );
           })}
+          {/* Long-Term Rentals and Dedicated Numbers now in SIDEBAR_NAV via NAV array */}
           {user.is_admin && (
             <>
               <div className="my-2 border-t border-[var(--border-color)]" />
@@ -202,7 +225,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </svg>
           <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-green-400 rounded-full" />
         </Link>
-
         {/* Profile dropdown */}
         <div className="relative">
           <button
@@ -251,12 +273,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* ── Mobile Top Header ── */}
       <header className="lg:hidden flex items-center justify-between px-5 pt-10 pb-4 sticky top-0 bg-[var(--bg-page)]/95 backdrop-blur z-30 border-b border-[var(--border-color)]">
-        <Link href="/" className="flex items-center gap-1.5">
+        <Link href="/dashboard" className="flex items-center gap-1.5">
           <Image src="/updated-logo.png" alt="Temp Number" width={28} height={28} className="w-7 h-7" />
           <span className="text-[var(--text-primary)] font-semibold text-base font-display">Temp Number</span>
         </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle />
+          <Link href="/dashboard/announcements" aria-label="Announcements" className="relative w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all">
+            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+            <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-green-400 rounded-full" />
+          </Link>
           <div className="relative">
             <button
               onClick={(e) => { e.stopPropagation(); setProfileOpen((o) => !o); }}
@@ -325,7 +353,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             className="bg-[var(--bg-section-alt)] border-b border-[var(--border-color)] shadow-2xl px-4 py-3 space-y-1"
             onClick={(e) => e.stopPropagation()}
           >
-            {NAV.map((item) => {
+            {HAMBURGER_NAV.map((item) => {
               const active = isActive(item);
               return (
                 <Link
