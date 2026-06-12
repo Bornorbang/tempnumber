@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AuthCTALink from "@/components/AuthCTALink";
 
 export const metadata: Metadata = {
   title: { absolute: "Dedicated USA Phone Numbers | Temp Number" },
@@ -102,12 +102,11 @@ export default function DedicatedNumbersPage() {
             unlimited SMS from any service.
           </p>
           <div className="flex justify-center">
-            <Link
-              href="/auth/signup?redirect=/dashboard/dedicated"
+            <AuthCTALink
+              dashboardPath="/dashboard/dedicated"
+              label="Rent Number"
               className="bg-green-500 hover:bg-green-400 text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all hover:shadow-lg hover:shadow-green-500/25"
-            >
-              Rent Number
-            </Link>
+            />
           </div>
         </div>
       </section>
@@ -214,12 +213,11 @@ export default function DedicatedNumbersPage() {
                 Create a free account, top up your wallet in Naira, and activate your number in under 2 minutes.
               </p>
               <div className="flex justify-center">
-                <Link
-                  href="/auth/signup?redirect=/dashboard/dedicated"
+                <AuthCTALink
+                  dashboardPath="/dashboard/dedicated"
+                  label="Rent Number"
                   className="bg-white text-green-600 font-semibold px-8 py-3 rounded-xl text-sm hover:bg-green-50 transition-colors"
-                >
-                  Rent Number
-                </Link>
+                />
               </div>
             </div>
           </div>

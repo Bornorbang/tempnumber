@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import AuthCTALink from "@/components/AuthCTALink";
 
 export const metadata: Metadata = {
   title: { absolute: "Long-term USA Phone Number Rentals | Temp Number" },
@@ -110,12 +110,11 @@ export default function LongTermRentalsPage() {
             30 days and receive unlimited SMS on it.
           </p>
           <div className="flex justify-center">
-            <Link
-              href="/auth/signup?redirect=/dashboard/long-term"
+            <AuthCTALink
+              dashboardPath="/dashboard/long-term"
+              label="Rent a Number"
               className="bg-green-500 hover:bg-green-400 text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all hover:shadow-lg hover:shadow-green-500/25"
-            >
-              Rent Number
-            </Link>
+            />
           </div>
         </div>
       </section>
@@ -222,12 +221,11 @@ export default function LongTermRentalsPage() {
                 Create a free account, choose your service and period, and get a USA number in under a minute.
               </p>
               <div className="flex justify-center">
-                <Link
-                  href="/auth/signup?redirect=/dashboard/long-term"
+                <AuthCTALink
+                  dashboardPath="/dashboard/long-term"
+                  label="Rent a Number"
                   className="bg-white text-green-600 font-semibold px-8 py-3 rounded-xl text-sm hover:bg-green-50 transition-colors"
-                >
-                  Rent Number
-                </Link>
+                />
               </div>
             </div>
           </div>

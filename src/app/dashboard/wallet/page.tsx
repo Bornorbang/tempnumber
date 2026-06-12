@@ -30,8 +30,8 @@ export default function WalletPage() {
 
   async function handleTopUp() {
     const amount = parseInt(raw, 10);
-    if (!amount || amount < 100) {
-      setError("Please enter a valid amount (minimum &#8358;100).");
+    if (!amount || amount < 500) {
+      setError("Please enter a valid amount (minimum ₦500).");
       return;
     }
     if (!user?.email) {
