@@ -114,10 +114,13 @@ export async function POST(req: NextRequest) {
   // Send BOTH the Authorization header (works in production / non-XAMPP)
   // AND X-Internal-Key + _user_id in body (bypasses Apache Authorization
   // stripping that happens on XAMPP server-to-server requests).
+  const CRON_SECRET = process.env.CRON_SECRET;
+
   const phpHeaders: Record<string, string> = {
     "Content-Type": "application/json",
     ...(authHeader ? { Authorization: authHeader } : {}),
     ...(PHP_INTERNAL_SECRET ? { "X-Internal-Key": PHP_INTERNAL_SECRET } : {}),
+    ...(CRON_SECRET ? { "X-Cron-Secret": CRON_SECRET } : {}),
   };
 
   try {
