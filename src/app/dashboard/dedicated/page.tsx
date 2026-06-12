@@ -335,13 +335,7 @@ export default function DedicatedPage() {
                           >
                             Renew
                           </button>
-                          <button
-                            onClick={() => doCancel(r)}
-                            disabled={loading}
-                            className="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20 transition-colors disabled:opacity-50"
-                          >
-                            Cancel
-                          </button>
+
                         </div>
                       )}
                     </div>

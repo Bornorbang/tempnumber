@@ -385,7 +385,7 @@ export default function LongTermPage() {
 
       {/* ── RENT MODAL ───────────────────────────────────────────────────────── */}
       {rentTarget && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="w-full max-w-sm bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-6">
             <h2 className="text-lg font-bold text-[var(--text-primary)] mb-1">Confirm Rental</h2>
             <p className="text-slate-500 dark:text-gray-400 text-sm mb-4">
@@ -465,7 +465,7 @@ export default function LongTermPage() {
 
       {/* ── MESSAGES MODAL ───────────────────────────────────────────────────── */}
       {msgTarget && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="w-full max-w-md bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl overflow-hidden">
             <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--border-color)]">
               <div>
