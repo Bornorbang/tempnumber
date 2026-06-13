@@ -198,21 +198,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           )}
         </nav>
 
-        {/* Wallet mini card */}
-        <div className="mx-3 mb-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl p-4">
-          <p className="text-gray-500 text-xs mb-0.5">Wallet Balance</p>
-          <p className="text-[var(--text-primary)] font-bold text-sm">
-            &#8358;{user.wallet_balance.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
-          </p>
-          <Link
-            href="/dashboard/wallet"
-            className="mt-3 w-full bg-green-500 hover:bg-green-400 text-white text-xs font-semibold py-2 rounded-lg transition-colors flex items-center justify-center gap-1.5"
+        {/* Community links */}
+        <div className="mx-3 mb-4 border-t border-[var(--border-color)] pt-3 space-y-0.5">
+          <a
+            href="https://whatsapp.com/channel/0029Vb7uTgC30LKUfBRj3p2L"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center px-4 py-2.5 rounded-xl text-sm font-medium text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)] transition-all"
           >
-            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 4v16m8-8H4" />
-            </svg>
-            Top Up
-          </Link>
+            Join Channel
+          </a>
+          <a
+            href="https://wa.me/2349160421899"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center px-4 py-2.5 rounded-xl text-sm font-medium text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)] transition-all"
+          >
+            Contact Support
+          </a>
         </div>
       </aside>
 
@@ -370,6 +373,42 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </Link>
               );
             })}
+            {user.is_admin && (
+              <>
+                <div className="my-1 border-t border-[var(--border-color)]" />
+                <Link
+                  href="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                    pathname.startsWith("/admin")
+                      ? "bg-green-500/10 text-green-500 border border-green-500/20"
+                      : "text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)]"
+                  }`}
+                >
+                  Admin
+                </Link>
+              </>
+            )}
+            <div className="border-t border-[var(--border-color)] pt-1 mt-1 space-y-1">
+              <a
+                href="https://whatsapp.com/channel/0029Vb7uTgC30LKUfBRj3p2L"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
+              >
+                Join Channel
+              </a>
+              <a
+                href="https://wa.me/2349160421899"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
+              >
+                Contact Support
+              </a>
+            </div>
           </div>
         </div>
       )}

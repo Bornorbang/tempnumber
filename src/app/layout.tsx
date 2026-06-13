@@ -5,7 +5,7 @@ import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import GoogleAuthProvider from "@/components/GoogleAuthProvider";
-import WhatsAppWidget from "@/components/WhatsAppWidget";
+
 
 const inter = Inter({
   variable: "--font-inter",
@@ -159,7 +159,6 @@ export default function RootLayout({
           <GoogleAuthProvider>
             <AuthProvider>{children}</AuthProvider>
           </GoogleAuthProvider>
-          <WhatsAppWidget />
         </ThemeProvider>
       </body>
     </html>
