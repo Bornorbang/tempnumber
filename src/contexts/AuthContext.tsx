@@ -14,7 +14,7 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string, referralCode?: string) => Promise<void>;
   loginWithGoogle: (idToken: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -77,8 +77,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(res.user);
   }
 
-  async function register(name: string, email: string, password: string) {
-    const res = await authApi.register(name, email, password);
+  async function register(name: string, email: string, password: string, referralCode?: string) {
+    const res = await authApi.register(name, email, password, referralCode);
     if (!res.token || !res.user) {
       throw new Error("Invalid response from server. Please try again.");
     }

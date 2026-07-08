@@ -207,9 +207,9 @@ export default function LongTermPage() {
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Long-Term Rentals</h1>
+          <h1 className="text-2xl font-bold text-[var(--text-primary)]">Long-Term USA Numbers</h1>
           <p className="text-slate-500 dark:text-gray-400 text-sm mt-1">
-            Rent a dedicated number for a specific service over days or weeks. Receive all incoming SMS for that service on your number.
+            Rent USA number for a specific service over days or weeks. Receive all incoming SMS for that service on your number.
           </p>
         </div>
 

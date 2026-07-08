@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 
 const PRESETS = [5_000, 10_000, 15_000, 20_000, 50_000];
@@ -50,6 +51,13 @@ export default function WalletPage() {
       if (!res.ok) {
         setError(data.error ?? "Failed to initialise payment. Try again.");
         return;
+      }
+      // Store return path so callback can redirect back to the dashboard the user came from
+      try {
+        const lastDashboard = sessionStorage.getItem("tn_last_dashboard") || "/dashboard/usa";
+        sessionStorage.setItem("tn_payment_return", lastDashboard);
+      } catch {
+        /* ignore storage errors */
       }
       window.location.href = data.authorization_url;
     } catch {
@@ -143,6 +151,16 @@ export default function WalletPage() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
           Secured by Paystack &middot; 256-bit SSL
+        </div>
+
+        {/* History link */}
+        <div className="mt-3 text-center">
+          <Link
+            href="/dashboard/history"
+            className="text-green-500 hover:text-green-400 text-xs underline-offset-2 hover:underline transition-colors"
+          >
+            View top-up history &rarr;
+          </Link>
         </div>
       </div>
     </div>

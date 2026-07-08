@@ -2,14 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import MiniFooter from "@/components/MiniFooter";
 import { GoogleLogin } from "@react-oauth/google";
 
 function SignUpForm() {
-  const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "", referralCode: "" });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -18,6 +18,12 @@ function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") ?? "/dashboard";
+
+  // Pre-fill referral code from ?ref= URL param
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref) setForm((f) => ({ ...f, referralCode: ref.toUpperCase() }));
+  }, [searchParams]);
 
   function update(field: string, value: string) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -29,7 +35,7 @@ function SignUpForm() {
     setLoading(true);
     setError(null);
     try {
-      await register(form.name, form.email, form.password);
+      await register(form.name, form.email, form.password, form.referralCode.trim() || undefined);
       router.push(redirectTo);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Registration failed. Please try again.");
@@ -166,6 +172,20 @@ function SignUpForm() {
               {!passwordsMatch && (
                 <p className="text-red-500 text-xs mt-1">Passwords do not match</p>
               )}
+            </div>
+
+            {/* Referral code — optional */}
+            <div>
+              <label className="block text-slate-700 dark:text-gray-300 text-sm font-medium mb-1.5">
+                Referral Code <span className="text-slate-400 dark:text-gray-500 font-normal">(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={form.referralCode}
+                onChange={(e) => update("referralCode", e.target.value.toUpperCase())}
+                maxLength={10}
+                className="w-full px-4 py-3 bg-white dark:bg-[#111827] border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 text-sm focus:outline-none focus:border-green-500 transition-colors uppercase tracking-widest font-mono"
+              />
             </div>
 
             <label className="flex items-start gap-2.5 cursor-pointer">

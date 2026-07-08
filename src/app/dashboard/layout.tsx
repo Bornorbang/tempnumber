@@ -12,29 +12,49 @@ const AVATAR_URL =
   "https://img.magnific.com/premium-vector/male-face-avatar-icon-set-flat-design-social-media-profiles_1281173-3806.jpg?semt=ais_hybrid&w=740&q=80";
 
 const NAV = [
-  { label: "Home",             href: "/dashboard",             exact: true  },
-  { label: "Rentals",          href: "/dashboard/rentals",     exact: false },
-  { label: "Long-term Rentals",href: "/dashboard/long-term",   exact: false },
-  { label: "Dedicated Numbers",href: "/dashboard/dedicated",   exact: false },
-  { label: "Wallet",           href: "/dashboard/wallet",      exact: false },
-  { label: "History",          href: "/dashboard/history",     exact: false },
-  { label: "Announcements",    href: "/dashboard/announcements",exact: false },
-  { label: "Reseller",         href: "/reseller",              exact: false },
+  { label: "USA Numbers",      href: "/dashboard/usa",           exact: true  },
+  { label: "All Countries",    href: "/dashboard/global",        exact: false },
+  { label: "Long-term Numbers",href: "/dashboard/long-term",     exact: false },
+  { label: "Dedicated Numbers",href: "/dashboard/dedicated",     exact: false },
+  { label: "Wallet",           href: "/dashboard/wallet",        exact: false },
+  { label: "Announcements",    href: "/dashboard/announcements", exact: false },
+  { label: "API",              href: "/dashboard/api",           exact: false },
 ];
 
-const SIDEBAR_NAV = NAV.filter((item) => item.label !== "Announcements");
-const HAMBURGER_NAV = NAV.filter((item) => item.label !== "Announcements");
+// Standard sidebar (non-global pages): USA Numbers → All Countries → Long-term → Dedicated → Wallet → Refer a Friend
+const STANDARD_SIDEBAR = [
+  { label: "USA Numbers",       href: "/dashboard/usa",          exact: true  },
+  { label: "All Countries",     href: "/dashboard/global",       exact: false },
+  { label: "Long-term Numbers", href: "/dashboard/long-term",    exact: false },
+  { label: "Dedicated Numbers", href: "/dashboard/dedicated",    exact: false },
+  { label: "Wallet",            href: "/dashboard/wallet",       exact: false },
+  { label: "Refer a Friend",    href: "/dashboard/referral",     exact: false, badge: "Earn ₦200" },
+];
+
+// Global page sidebar: All Countries → USA Numbers → Wallet → Refer a Friend
+const GLOBAL_SIDEBAR = [
+  { label: "All Countries", href: "/dashboard/global", exact: false },
+  { label: "USA Numbers",   href: "/dashboard/usa",    exact: true  },
+  { label: "Wallet",        href: "/dashboard/wallet",  exact: false },
+  { label: "Refer a Friend", href: "/dashboard/referral", exact: false, badge: "Earn ₦200" },
+];
+
 const BOTTOM_NAV = [
-  { label: "Home",      href: "/dashboard",           exact: true  },
-  { label: "Rentals",   href: "/dashboard/rentals",   exact: false },
-  { label: "Wallet",    href: "/dashboard/wallet",    exact: false },
-  { label: "Long-term", href: "/dashboard/long-term", exact: false },
-  { label: "Dedicated",  href: "/dashboard/dedicated", exact: false },
+  { label: "USA Numbers",   href: "/dashboard/usa",      exact: true  },
+  { label: "Wallet",        href: "/dashboard/wallet",   exact: false },
+  { label: "Long-term",     href: "/dashboard/long-term",exact: false },
+  { label: "Dedicated",     href: "/dashboard/dedicated",exact: false },
+  { label: "All Countries", href: "/dashboard/global",   exact: false },
 ];
 
 // ── Icons for bottom mobile nav only ─────────────────────────────────────────
 const NAV_ICONS: Record<string, (active: boolean) => React.ReactNode> = {
   Home: (a) => (
+    <svg className={`w-5 h-5 ${a ? "text-green-400" : "text-gray-500"}`} fill={a ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+    </svg>
+  ),
+  "USA Numbers": (a) => (
     <svg className={`w-5 h-5 ${a ? "text-green-400" : "text-gray-500"}`} fill={a ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
     </svg>
@@ -74,6 +94,16 @@ const NAV_ICONS: Record<string, (active: boolean) => React.ReactNode> = {
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
     </svg>
   ),
+  API: (a) => (
+    <svg className={`w-5 h-5 ${a ? "text-green-400" : "text-gray-500"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+    </svg>
+  ),
+  "All Countries": (a) => (
+    <svg className={`w-5 h-5 ${a ? "text-green-400" : "text-gray-500"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 004 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
 };
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -88,13 +118,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   useEffect(() => {
     const PAGE_TITLES: Record<string, string> = {
       "/dashboard":               "Dashboard",
+      "/dashboard/usa":           "USA Numbers",
       "/dashboard/rentals":       "Rentals",
       "/dashboard/wallet":        "Wallet",
       "/dashboard/history":       "History",
-      "/dashboard/long-term":     "Long-Term Rentals",
+      "/dashboard/long-term":     "Long-Term Numbers",
+      "/dashboard/api":           "Developer API",
+      "/dashboard/global":         "All Countries",
       "/dashboard/dedicated":      "Dedicated Numbers",
       "/dashboard/announcements": "Announcements",
       "/dashboard/profile":       "Profile",
+      "/dashboard/referral":      "Refer a Friend",
     };
     const title = PAGE_TITLES[pathname] ?? "Dashboard";
     document.title = `${title} - Temp Number`;
@@ -122,17 +156,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <button
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         aria-label="Toggle theme"
+        suppressHydrationWarning
         className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
       >
-        {theme === "dark" ? (
-          <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-          </svg>
-        ) : (
-          <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
-        )}
+        <span suppressHydrationWarning>
+          {theme === "dark" ? (
+            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+            </svg>
+          ) : (
+            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          )}
+        </span>
       </button>
     );
   }
@@ -148,6 +185,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   if (!user) return null;
 
+  // ── Selection page (/dashboard exact) — no sidebar, full-screen ──────────
+  if (pathname === "/dashboard") {
+    return (
+      <div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center">
+        {children}
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[var(--bg-page)]">
 
@@ -159,25 +205,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <span className="text-[var(--text-primary)] font-semibold text-sm font-display">Temp Number</span>
         </Link>
 
-        {/* Navigation — text only, no icons */}
+        {/* Navigation */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-          {SIDEBAR_NAV.map((item) => {
+          {(pathname.startsWith("/dashboard/global") ? GLOBAL_SIDEBAR : STANDARD_SIDEBAR).map((item) => {
             const active = isActive(item);
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   active
                     ? "bg-green-500/10 text-green-500 border border-green-500/20"
                     : "text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)]"
                 }`}
               >
-                {item.label}
+                <span>{item.label}</span>
+                {item.badge && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500 text-white">
+                    {item.badge}
+                  </span>
+                )}
               </Link>
             );
           })}
-          {/* Long-Term Rentals and Dedicated Numbers now in SIDEBAR_NAV via NAV array */}
           {user.is_admin && (
             <>
               <div className="my-2 border-t border-[var(--border-color)]" />
@@ -356,20 +406,33 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             className="bg-[var(--bg-section-alt)] border-b border-[var(--border-color)] shadow-2xl px-4 py-3 space-y-1"
             onClick={(e) => e.stopPropagation()}
           >
-            {HAMBURGER_NAV.map((item) => {
+            {(pathname.startsWith("/dashboard/global") ? GLOBAL_SIDEBAR : STANDARD_SIDEBAR).map((item) => {
               const active = isActive(item);
+              const isReferral = item.href === "/dashboard/referral";
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                  className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                     active
                       ? "bg-green-500/10 text-green-500 border border-green-500/20"
                       : "text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)]"
                   }`}
                 >
-                  {item.label}
+                  <span className="flex items-center gap-2">
+                    {isReferral && (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    )}
+                    {item.label}
+                  </span>
+                  {item.badge && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500 text-white">
+                      {item.badge}
+                    </span>
+                  )}
                 </Link>
               );
             })}

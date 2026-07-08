@@ -73,9 +73,20 @@ function CallbackContent() {
           }
         }
 
+        // Set success flag so dashboard can refresh user data
+        try {
+          sessionStorage.setItem("tn_payment_success", "1");
+        } catch {
+          /* ignore */
+        }
+
         setAmount(data.amount ?? null);
         setStatus("success");
-        setTimeout(() => router.replace("/dashboard"), 2000);
+        // Redirect back to the dashboard the user came from (usa/global), default to usa
+        const returnTo = typeof window !== "undefined" 
+          ? sessionStorage.getItem("tn_payment_return") || "/dashboard/usa"
+          : "/dashboard/usa";
+        setTimeout(() => router.replace(returnTo), 2000);
       })
       .catch(() => {
         setErrMsg(

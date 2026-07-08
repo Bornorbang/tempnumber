@@ -181,7 +181,7 @@ export default function DedicatedPage() {
 
       {/* Header */}
       <div>
-        <h1 className="text-[var(--text-primary)] text-2xl font-bold">Dedicated Numbers</h1>
+        <h1 className="text-[var(--text-primary)] text-2xl font-bold">Dedicated USA Numbers</h1>
         <p className="text-gray-400 text-sm mt-1">
           Your own exclusive USA number — use it for any service, as many times as you want.
         </p>

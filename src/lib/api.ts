@@ -63,10 +63,10 @@ export type User = {
 export type AuthResponse = { token: string; user: User };
 
 export const authApi = {
-  register: (name: string, email: string, password: string) =>
+  register: (name: string, email: string, password: string, referralCode?: string) =>
     apiFetch<AuthResponse>("/auth/register.php", {
       method: "POST",
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email, password, ...(referralCode ? { referral_code: referralCode } : {}) }),
     }),
 
   login: (email: string, password: string) =>
@@ -104,6 +104,8 @@ export type StoredRental = {
   sms_code?: string | null;
   rented_at: string;
   refunded?: boolean;
+  source?: string | null;       // 'getatext' | 'fivesim'
+  country?: string | null;      // 5sim country code, null for getatext
 };
 
 export const rentalsApi = {
