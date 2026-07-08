@@ -160,7 +160,7 @@ export default function ServicesAndCountries() {
       router.push("/auth/signin");
       return;
     }
-    router.push(`/dashboard?rent=${encodeURIComponent(rentName)}`);
+    router.push(`/dashboard/usa?rent=${encodeURIComponent(rentName)}`);
   }
 
   return (

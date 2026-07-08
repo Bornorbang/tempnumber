@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
-const LAST_UPDATED = "12 June 2026";
+const LAST_UPDATED = "8 July 2026";
 
 export default function TermsPage() {
   return (
@@ -287,7 +287,38 @@ export default function TermsPage() {
               </p>
             </Section>
 
-            <Section title="11. Limitation of Liability">
+            <Section title="11. Third-Party Platform Liability">
+              <p>
+                Temp Number provides phone numbers for SMS verification purposes only. We are <strong>not responsible</strong> for:
+              </p>
+              <ul>
+                <li>
+                  Any bans, suspensions, restrictions, or account terminations you may experience on third-party platforms
+                  (such as WhatsApp, Google, Facebook, Telegram, or any other service) as a result of using our numbers.
+                </li>
+                <li>
+                  Third-party platforms' acceptance or rejection of our numbers, as each platform maintains its own
+                  verification policies which may change without notice.
+                </li>
+                <li>
+                  Any issues, disputes, or damages arising from your use of third-party services, including but not
+                  limited to data loss, privacy violations, or service interruptions.
+                </li>
+              </ul>
+              <p>
+                <strong>Important:</strong> Temporary numbers are designed for <strong>one-time verification only</strong>.
+                They are <strong>not suitable</strong> for permanent account ownership or long-term use. If you require ongoing
+                access to a service or need stable account ownership, we strongly recommend using our <strong>Long-Term USA Numbers</strong>
+                (available for 1-30 days with auto-renew options). Using temporary numbers for purposes requiring permanent phone
+                access may result in account issues on third-party platforms, for which we bear no responsibility.
+              </p>
+              <p>
+                By using our service, you acknowledge that you are solely responsible for how you use the numbers we provide
+                and any consequences that may arise from such use.
+              </p>
+            </Section>
+
+            <Section title="12. Limitation of Liability">
               <p>
                 To the maximum extent permitted by law, Temp Number shall not be liable for any indirect,
                 incidental, special, or consequential damages arising from your use of (or inability to
@@ -297,7 +328,7 @@ export default function TermsPage() {
               </p>
             </Section>
 
-            <Section title="12. Modifications to Terms">
+            <Section title="13. Modifications to Terms">
               <p>
                 We reserve the right to update these Terms at any time. Changes will be posted on this
                 page with an updated &ldquo;Last Updated&rdquo; date. Continued use of our services after
@@ -305,7 +336,7 @@ export default function TermsPage() {
               </p>
             </Section>
 
-            <Section title="13. Governing Law">
+            <Section title="14. Governing Law">
               <p>
                 These Terms are governed by and construed in accordance with the laws of the Federal
                 Republic of Nigeria. Any disputes shall be subject to the exclusive jurisdiction of the
@@ -313,7 +344,7 @@ export default function TermsPage() {
               </p>
             </Section>
 
-            <Section title="14. Contact Us">
+            <Section title="15. Contact Us">
               <p>
                 For questions about these Terms, please contact us at:
               </p>
