@@ -6,6 +6,7 @@ type RentalRow = {
   id: number; user_id: number; user_name: string; user_email: string;
   getatext_id: number; number: string; service_name: string; end_time: string;
   price_usd: number; price_ngn: number; status: string; sms_code: string | null; rented_at: string;
+  source?: string; country?: string;
 };
 
 const STATUS_STYLES: Record<string, string> = {
@@ -83,7 +84,10 @@ export default function AdminRentalsPage() {
                     <p className="text-gray-500 text-xs">{r.user_email}</p>
                   </div>
                   <p className="text-[var(--text-primary)] text-sm font-mono">{r.number}</p>
-                  <p className="text-gray-400 text-sm">{r.service_name}</p>
+                  <div>
+                    <p className="text-gray-400 text-sm">{r.service_name}</p>
+                    {r.country && <p className="text-gray-500 text-xs">{r.country}</p>}
+                  </div>
                   <p className="text-[var(--text-primary)] text-sm font-semibold text-right">₦{r.price_ngn.toLocaleString()}</p>
                   <span className={`text-xs font-semibold px-2.5 py-1 rounded-full text-center ${STATUS_STYLES[r.status] ?? "bg-gray-500/15 text-gray-400"}`}>
                     {r.status.charAt(0).toUpperCase() + r.status.slice(1)}
@@ -96,6 +100,7 @@ export default function AdminRentalsPage() {
                     <div>
                       <p className="text-[var(--text-primary)] text-sm font-medium">{r.user_name}</p>
                       <p className="text-gray-500 text-xs">{r.number} &middot; {r.service_name}</p>
+                      {r.country && <p className="text-gray-500 text-xs">{r.country}</p>}
                     </div>
                     <p className="text-[var(--text-primary)] text-sm font-bold flex-shrink-0">₦{r.price_ngn.toLocaleString()}</p>
                   </div>
