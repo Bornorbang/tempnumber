@@ -23,7 +23,7 @@ async function backend(request: NextRequest, action: string, payload?: Record<st
   const raw = await response.clone().text();
   let data: Record<string, unknown>;
   try { data = JSON.parse(raw) as Record<string, unknown>; }
-  catch { throw new Error("The wallet service returned an invalid response"); }
+  catch { data = { error: `The wallet service returned HTTP ${response.status} instead of JSON.` }; }
   return { response, data };
 }
 
