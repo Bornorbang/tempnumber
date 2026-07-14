@@ -34,7 +34,14 @@ async function backend(request: NextRequest, action: string, payload?: Record<st
 }
 
 async function provider(path: string, init?: RequestInit) {
-  return fetch(PROVIDER + path, { ...init, headers: { Accept: "application/json", ...init?.headers }, cache: "no-store" });
+  return fetch(PROVIDER + path, { ...init, headers: { Accept: "application/ld+json", ...init?.headers }, cache: "no-store" });
+}
+
+async function providerJson<T>(response: Response): Promise<T> {
+  const raw = await response.text();
+  if (!raw) throw new Error(`Mail.tm returned an empty response (HTTP ${response.status}).`);
+  try { return JSON.parse(raw) as T; }
+  catch { throw new Error(`Mail.tm returned an invalid response (HTTP ${response.status}).`); }
 }
 
 function randomText(length: number) {
@@ -82,16 +89,16 @@ export async function POST(request: NextRequest) {
       const id = Number(charge.data.id);
       try {
         const domains = await provider("/domains");
-        const domainData = await domains.json() as { "hydra:member"?: Array<{ domain: string; isActive: boolean }> } | Array<{ domain: string; isActive: boolean }>;
+        const domainData = await providerJson<{ "hydra:member"?: Array<{ domain: string; isActive: boolean }> } | Array<{ domain: string; isActive: boolean }>>(domains);
         const availableDomains = Array.isArray(domainData) ? domainData : domainData["hydra:member"] ?? [];
         const domain = availableDomains.find((item) => item.isActive)?.domain;
         if (!domains.ok || !domain) throw new Error("No email domains are available right now.");
         const address = randomText(12) + "@" + domain;
         const password = randomText(32);
         const account = await provider("/accounts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ address, password }) });
-        const accountData = await account.json() as { id?: string };
+        const accountData = await providerJson<{ id?: string }>(account);
         const token = await provider("/token", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ address, password }) });
-        const tokenData = await token.json() as { token?: string };
+        const tokenData = await providerJson<{ token?: string }>(token);
         if (!account.ok || !token.ok || !accountData.id || !tokenData.token) throw new Error("Could not create an email inbox.");
         const activated = await backend(request, "activate_email", { id, address, provider_account_id: accountData.id, provider_token: tokenData.token });
         return NextResponse.json(activated.data, { status: activated.response.status });
