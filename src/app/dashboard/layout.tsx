@@ -28,8 +28,8 @@ const STANDARD_SIDEBAR = [
   { label: "Long-term Numbers", href: "/dashboard/long-term",    exact: false },
   { label: "Dedicated Numbers", href: "/dashboard/dedicated",    exact: false },
   { label: "Wallet",            href: "/dashboard/wallet",       exact: false },
-  { label: "Refer a Friend",    href: "/dashboard/referral",     exact: false, badge: "Earn ₦200" },
   { label: "Temporary Emails",  href: "/dashboard/temp-mail",    exact: false },
+  { label: "Refer a Friend",    href: "/dashboard/referral",     exact: false, badge: "Earn ₦200" },
 ];
 
 // Global page sidebar: All Countries → USA Numbers → Wallet → Refer a Friend
@@ -37,8 +37,8 @@ const GLOBAL_SIDEBAR = [
   { label: "All Countries", href: "/dashboard/global", exact: false },
   { label: "USA Numbers",   href: "/dashboard/usa",    exact: true  },
   { label: "Wallet",        href: "/dashboard/wallet",  exact: false },
-  { label: "Refer a Friend", href: "/dashboard/referral", exact: false, badge: "Earn ₦200" },
   { label: "Temporary Emails", href: "/dashboard/temp-mail", exact: false },
+  { label: "Refer a Friend", href: "/dashboard/referral", exact: false, badge: "Earn ₦200" },
 ];
 
 const BOTTOM_NAV = [
