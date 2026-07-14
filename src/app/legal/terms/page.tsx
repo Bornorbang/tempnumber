@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
-const LAST_UPDATED = "8 July 2026";
+const LAST_UPDATED = "14 July 2026";
 
 export default function TermsPage() {
   return (
@@ -154,6 +154,30 @@ export default function TermsPage() {
                   availability at any given time.
                 </li>
                 <li>SMS delivery is not guaranteed and depends on the originating platform.</li>
+              </ul>
+            </Section>
+
+            <Section title="3d. Temporary Email">
+              <p>
+                Temp Mail provides disposable email addresses for short-term use. Each generated email
+                address is made available in your dashboard for 24 hours, unless it is renewed in
+                accordance with the options shown in your dashboard.
+              </p>
+              <ul>
+                <li>
+                  <strong>Wallet charge.</strong> The displayed charge is deducted from your wallet when
+                  an email address is successfully generated.
+                </li>
+                <li>
+                  <strong>No refunds.</strong> Temporary Email charges are final. Once an email address
+                  has been generated, it cannot be cancelled, returned, or refunded, including where it
+                  is unused or removed from your dashboard.
+                </li>
+                <li>
+                  <strong>Availability.</strong> Temporary Email delivery and availability depend on our
+                  provider and the sending service. We do not guarantee that every third-party service
+                  will accept a disposable email address or that every message will be delivered.
+                </li>
               </ul>
             </Section>
 
@@ -297,7 +321,7 @@ export default function TermsPage() {
                   (such as WhatsApp, Google, Facebook, Telegram, or any other service) as a result of using our numbers.
                 </li>
                 <li>
-                  Third-party platforms' acceptance or rejection of our numbers, as each platform maintains its own
+                  Third-party platforms&apos; acceptance or rejection of our numbers, as each platform maintains its own
                   verification policies which may change without notice.
                 </li>
                 <li>
