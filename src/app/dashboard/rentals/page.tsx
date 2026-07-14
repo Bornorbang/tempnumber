@@ -335,7 +335,7 @@ function RentalsPageInner() {
   }
 
   const tabRentals = rentals.filter((r) =>
-    activeTab === "usa" ? r.source !== "fivesim" : r.source === "fivesim"
+    activeTab === "usa" ? r.source === "getatext" : r.source === "fivesim"
   );
 
   const filtered = tabRentals.filter((r) => {
@@ -353,7 +353,7 @@ function RentalsPageInner() {
   const safePage    = Math.min(page, totalPages);
   const paginated   = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
-  const usaCount    = rentals.filter((r) => r.source !== "fivesim").length;
+  const usaCount    = rentals.filter((r) => r.source === "getatext").length;
   const globalCount = rentals.filter((r) => r.source === "fivesim").length;
   const activeCount = tabRentals.filter((r) => r.status === "active").length;
 
@@ -517,4 +517,3 @@ export default function RentalsPage() {
       <RentalsPageInner />
     </Suspense>
   );
-}
