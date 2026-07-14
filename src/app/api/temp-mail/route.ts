@@ -64,7 +64,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const input = await request.json() as { action?: string; id?: number };
+    const raw = await request.text();
+    let input: { action?: string; id?: number } = {};
+    if (raw) {
+      try { input = JSON.parse(raw) as { action?: string; id?: number }; }
+      catch { return NextResponse.json({ error: "Invalid request body" }, { status: 400 }); }
+    }
+    input.action ??= request.nextUrl.searchParams.get("action") ?? undefined;
+    input.id ??= Number(request.nextUrl.searchParams.get("id") ?? 0) || undefined;
     if (input.action === "create") {
       const charge = await backend(request, "purchase_email", {});
       if (!charge.response.ok) return NextResponse.json(charge.data, { status: charge.response.status });

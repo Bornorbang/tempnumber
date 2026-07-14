@@ -46,20 +46,20 @@ export default function TempMailPage() {
 
   async function create() {
     setBusy("create");
-    try { await request("", { method: "POST", body: JSON.stringify({ action: "create" }) }); await load(); setToast("Temporary email created. ₦700 was deducted from your wallet."); }
+    try { await request("?action=create", { method: "POST" }); await load(); setToast("Temporary email created. ₦700 was deducted from your wallet."); }
     catch (error) { setToast(error instanceof Error ? error.message : "Could not create an email."); }
     finally { setBusy(null); }
   }
   async function renew(email: Email) {
     setBusy(email.id);
-    try { await request("", { method: "POST", body: JSON.stringify({ action: "renew", id: email.id }) }); await load(); setToast("Email renewed for another 24 hours."); }
+    try { await request("?action=renew&id=" + email.id, { method: "POST" }); await load(); setToast("Email renewed for another 24 hours."); }
     catch (error) { setToast(error instanceof Error ? error.message : "Could not renew this email."); }
     finally { setBusy(null); }
   }
   async function remove() {
     if (!confirmDelete) return;
     setBusy(confirmDelete.id);
-    try { await request("", { method: "POST", body: JSON.stringify({ action: "delete", id: confirmDelete.id }) }); setConfirmDelete(null); await load(); setToast("Temporary email deleted."); }
+    try { await request("?action=delete&id=" + confirmDelete.id, { method: "POST" }); setConfirmDelete(null); await load(); setToast("Temporary email deleted."); }
     catch (error) { setToast(error instanceof Error ? error.message : "Could not delete this email."); }
     finally { setBusy(null); }
   }
