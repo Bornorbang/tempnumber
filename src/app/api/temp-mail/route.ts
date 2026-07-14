@@ -64,14 +64,18 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const raw = await request.text();
-    let input: { action?: string; id?: number } = {};
-    if (raw) {
+    const queryAction = request.nextUrl.searchParams.get("action");
+    const queryId = Number(request.nextUrl.searchParams.get("id") ?? 0) || undefined;
+    let input: { action?: string; id?: number };
+    if (queryAction) {
+      // Dashboard actions use the URL query string so Vercel never needs to parse a POST body.
+      input = { action: queryAction, id: queryId };
+    } else {
+      const raw = await request.text();
+      if (!raw) return NextResponse.json({ error: "An action is required" }, { status: 400 });
       try { input = JSON.parse(raw) as { action?: string; id?: number }; }
       catch { return NextResponse.json({ error: "Invalid request body" }, { status: 400 }); }
     }
-    input.action ??= request.nextUrl.searchParams.get("action") ?? undefined;
-    input.id ??= Number(request.nextUrl.searchParams.get("id") ?? 0) || undefined;
     if (input.action === "create") {
       const charge = await backend(request, "purchase_email", {});
       if (!charge.response.ok) return NextResponse.json(charge.data, { status: charge.response.status });
