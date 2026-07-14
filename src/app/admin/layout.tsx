@@ -16,6 +16,7 @@ const ADMIN_NAV = [
   { label: "Rental History",   href: "/admin/rentals",           exact: false },
   { label: "Long-Term Rentals",href: "/admin/long-rentals",      exact: false },
   { label: "Dedicated Numbers",href: "/admin/dedicated",          exact: false },
+  { label: "Temporary Emails", href: "/admin/temp-mail",          exact: false },
   { label: "Referrals",        href: "/admin/referrals",         exact: false },
 ];
 

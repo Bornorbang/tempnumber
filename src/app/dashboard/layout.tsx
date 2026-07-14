@@ -29,6 +29,7 @@ const STANDARD_SIDEBAR = [
   { label: "Dedicated Numbers", href: "/dashboard/dedicated",    exact: false },
   { label: "Wallet",            href: "/dashboard/wallet",       exact: false },
   { label: "Refer a Friend",    href: "/dashboard/referral",     exact: false, badge: "Earn ₦200" },
+  { label: "Temporary Emails",  href: "/dashboard/temp-mail",    exact: false },
 ];
 
 // Global page sidebar: All Countries → USA Numbers → Wallet → Refer a Friend
@@ -37,6 +38,7 @@ const GLOBAL_SIDEBAR = [
   { label: "USA Numbers",   href: "/dashboard/usa",    exact: true  },
   { label: "Wallet",        href: "/dashboard/wallet",  exact: false },
   { label: "Refer a Friend", href: "/dashboard/referral", exact: false, badge: "Earn ₦200" },
+  { label: "Temporary Emails", href: "/dashboard/temp-mail", exact: false },
 ];
 
 const BOTTOM_NAV = [
@@ -129,6 +131,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       "/dashboard/announcements": "Announcements",
       "/dashboard/profile":       "Profile",
       "/dashboard/referral":      "Refer a Friend",
+      "/dashboard/temp-mail":     "Temporary Emails",
     };
     const title = PAGE_TITLES[pathname] ?? "Dashboard";
     document.title = `${title} - Temp Number`;
@@ -221,7 +224,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               >
                 <span>{item.label}</span>
                 {item.badge && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-500 text-white">
+                  <span className="shrink-0 whitespace-nowrap text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-green-500 text-white">
                     {item.badge}
                   </span>
                 )}

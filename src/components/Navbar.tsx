@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { label: "Pricing",           href: "/pricing" },
   { label: "Long-term Rentals", href: "/long-term-rentals" },
   { label: "Dedicated Numbers", href: "/dedicated-numbers" },
+  { label: "Temporary Email",  href: "/temporary-email" },
   { label: "Resellers",         href: "/reseller" },
 ];
 
