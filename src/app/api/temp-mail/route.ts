@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const PHP = process.env.PHP_API_BASE ?? process.env.NEXT_PUBLIC_API_URL ?? "";
 const PROVIDER = "https://api.mail.tm";
+let cachedDomain: { value: string; expiresAt: number } | null = null;
 
 function connectionError(error: unknown) {
   if (!(error instanceof Error)) return "unknown connection error";
@@ -42,6 +43,31 @@ async function providerJson<T>(response: Response): Promise<T> {
   if (!raw) throw new Error(`Mail.tm returned an empty response (HTTP ${response.status}).`);
   try { return JSON.parse(raw) as T; }
   catch { throw new Error(`Mail.tm returned an invalid response (HTTP ${response.status}).`); }
+}
+
+async function activeDomain() {
+  if (cachedDomain && cachedDomain.expiresAt > Date.now()) return cachedDomain.value;
+  let lastStatus = 0;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const response = await provider("/domains");
+      lastStatus = response.status;
+      if (response.ok) {
+        const data = await providerJson<{ "hydra:member"?: Array<{ domain: string; isActive: boolean }> } | Array<{ domain: string; isActive: boolean }>>(response);
+        const domains = Array.isArray(data) ? data : data["hydra:member"] ?? [];
+        const domain = domains.find((item) => item.isActive)?.domain;
+        if (domain) {
+          cachedDomain = { value: domain, expiresAt: Date.now() + 5 * 60 * 1000 };
+          return domain;
+        }
+      }
+      if (response.status !== 429 && response.status < 500) break;
+    } catch {
+      // Retry transient provider network failures below.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 400 * (attempt + 1)));
+  }
+  throw new Error(lastStatus ? `Mail.tm is temporarily unavailable (HTTP ${lastStatus}). Please try again shortly.` : "Mail.tm could not be reached. Please try again shortly.");
 }
 
 function randomText(length: number) {
@@ -88,11 +114,7 @@ export async function POST(request: NextRequest) {
       if (!charge.response.ok) return NextResponse.json(charge.data, { status: charge.response.status });
       const id = Number(charge.data.id);
       try {
-        const domains = await provider("/domains");
-        const domainData = await providerJson<{ "hydra:member"?: Array<{ domain: string; isActive: boolean }> } | Array<{ domain: string; isActive: boolean }>>(domains);
-        const availableDomains = Array.isArray(domainData) ? domainData : domainData["hydra:member"] ?? [];
-        const domain = availableDomains.find((item) => item.isActive)?.domain;
-        if (!domains.ok || !domain) throw new Error("No email domains are available right now.");
+        const domain = await activeDomain();
         const address = randomText(12) + "@" + domain;
         const password = randomText(32);
         const account = await provider("/accounts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ address, password }) });
