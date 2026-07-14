@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 const PHP = process.env.PHP_API_BASE ?? process.env.NEXT_PUBLIC_API_URL ?? "";
 const PROVIDER = "https://api.mail.tm";
 
+function connectionError(error: unknown) {
+  if (!(error instanceof Error)) return "unknown connection error";
+  const cause = error.cause as { code?: string; message?: string } | undefined;
+  return cause?.code ?? cause?.message ?? error.message;
+}
+
 function authHeaders(request: NextRequest) {
   return { "Content-Type": "application/json", Authorization: request.headers.get("authorization") ?? "" };
 }
@@ -51,8 +57,8 @@ export async function GET(request: NextRequest) {
     const response = await provider(path, { headers: { Authorization: "Bearer " + token } });
     if (action === "message" && response.ok) void provider(path, { method: "PATCH", headers: { Authorization: "Bearer " + token } });
     return jsonResponse(response);
-  } catch {
-    return NextResponse.json({ error: "Unable to reach the Temp Mail service" }, { status: 502 });
+  } catch (error) {
+    return NextResponse.json({ error: "Unable to reach the Temp Mail service: " + connectionError(error) }, { status: 502 });
   }
 }
 
@@ -92,7 +98,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(result.data, { status: result.response.status });
     }
     return NextResponse.json({ error: "Unknown action" }, { status: 400 });
-  } catch {
-    return NextResponse.json({ error: "Unable to reach the Temp Mail service" }, { status: 502 });
+  } catch (error) {
+    return NextResponse.json({ error: "Unable to reach the Temp Mail service: " + connectionError(error) }, { status: 502 });
   }
 }
