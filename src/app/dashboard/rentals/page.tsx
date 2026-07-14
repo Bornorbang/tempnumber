@@ -325,7 +325,11 @@ function RentalsPageInner() {
     setLoading(false);
   }, []);
 
-  useEffect(() => { loadRentals(); }, [loadRentals]);
+  useEffect(() => {
+    // Loading remote rentals is the purpose of this mount effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void loadRentals();
+  }, [loadRentals]);
 
   function switchTab(tab: "usa" | "global") {
     setActiveTab(tab);
@@ -517,3 +521,4 @@ export default function RentalsPage() {
       <RentalsPageInner />
     </Suspense>
   );
+}
