@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
-const LAST_UPDATED = "14 July 2026";
+const LAST_UPDATED = "20 July 2026";
 
 export default function TermsPage() {
   return (
@@ -136,8 +136,8 @@ export default function TermsPage() {
                 </li>
                 <li>
                   <strong>Non-cancellable.</strong> Dedicated number rentals cannot be cancelled and no
-                  refund is issued once the number has been activated, except where the number cannot be
-                  provisioned due to a technical failure on our part.
+                  refund is issued once the number has been activated. If a funding or billing error is
+                  confirmed, our sole remedy will be an appropriate adjustment to your Temp Number wallet.
                 </li>
                 <li>
                   <strong>Auto-renew.</strong> If you enable auto-renew, your wallet will be charged the
@@ -192,8 +192,11 @@ export default function TermsPage() {
                 if you suspect any unauthorized use of your account.
               </p>
               <p>
-                We reserve the right to suspend or terminate accounts that violate these Terms, engage in
-                fraudulent activity, or are inactive for an extended period.
+                To the maximum extent permitted by applicable law, we may restrict, suspend, disable, or
+                terminate your account or access to any part of the service at any time, with or without
+                cause, in our sole discretion and without prior notice. This includes, without limitation,
+                suspected fraud, abuse, risk to the platform or third parties, violation of these Terms,
+                or extended inactivity. We are not liable for any loss arising from such action.
               </p>
             </Section>
 
@@ -230,28 +233,24 @@ export default function TermsPage() {
 
             <Section title="6. Refund Policy">
               <p>
-                Given the digital and time-sensitive nature of our service, all completed transactions are
-                generally non-refundable. However, we will consider refunds in the following circumstances:
-              </p>
-              <ul>
-                <li>
-                  A standard number was successfully rented but no SMS was received within the rental
-                  window due to a confirmed technical issue on our part.
-                </li>
-                <li>A duplicate charge occurred on your account due to a technical error.</li>
-                <li>
-                  A dedicated number was charged but could not be provisioned due to a technical failure
-                  on our side (e.g. the number was not assigned by our provider).
-                </li>
-              </ul>
-              <p>
-                Long-term rentals and dedicated number rentals are <strong>non-refundable</strong> once
-                successfully activated, including in cases where the number expires unused or auto-renew
-                is disabled due to insufficient balance.
+                <strong>All payments, wallet top-ups, purchases, rentals, renewals, and other completed
+                transactions are final and non-refundable.</strong> We do not provide cash refunds, card
+                reversals, bank-transfer refunds, withdrawals, or refunds to any original payment method,
+                except where expressly required by applicable law.
               </p>
               <p>
-                All refund requests must be submitted within 24 hours of the transaction and include your
-                transaction reference. Contact us at{" "}
+                If we confirm a funding, duplicate-charge, billing, or wallet-crediting issue, our sole
+                remedy will be to investigate the transaction and, where appropriate, manually correct or
+                credit your Temp Number wallet balance. A wallet correction or credit is not a refund, has
+                no cash value, cannot be withdrawn or transferred, and may only be used for services on the
+                Temp Number platform.
+              </p>
+              <p>
+                No refund or external reimbursement will be provided for failures, delays, rejection,
+                bans, suspensions, non-delivery, incompatibility, policy changes, or any other act or
+                omission caused by a telephony provider, payment provider, messaging service, or other
+                third-party platform. Questions about a funding issue should include your transaction
+                reference and be sent to{" "}
                 <a href="mailto:support@tempnumber.ng" className="text-green-500 hover:underline">
                   support@tempnumber.ng
                 </a>
@@ -307,7 +306,9 @@ export default function TermsPage() {
                 We make no warranties, express or implied, including but not limited to warranties of
                 merchantability, fitness for a particular purpose, or non-infringement. We do not warrant
                 that the service will be uninterrupted, error-free, or that SMS messages will always be
-                delivered.
+                delivered. We do not guarantee that using any number, email address, or other service we
+                provide will successfully register, verify, recover, maintain, or otherwise provide access
+                to an account on any third-party platform.
               </p>
             </Section>
 
@@ -338,17 +339,23 @@ export default function TermsPage() {
               </p>
               <p>
                 By using our service, you acknowledge that you are solely responsible for how you use the numbers we provide
-                and any consequences that may arise from such use.
+                and any consequences that may arise from such use. You assume all risks associated with
+                third-party platforms, whose availability, acceptance rules, security systems, policies,
+                and decisions are outside our control.
               </p>
             </Section>
 
             <Section title="12. Limitation of Liability">
               <p>
-                To the maximum extent permitted by law, Temp Number shall not be liable for any indirect,
-                incidental, special, or consequential damages arising from your use of (or inability to
-                use) our services, including but not limited to lost profits, data loss, or business
-                interruption. Our total liability for any claim shall not exceed the amount you paid to us
-                in the 30 days preceding the event giving rise to the claim.
+                To the maximum extent permitted by law, you use Temp Number entirely at your own risk.
+                Temp Number shall not be liable for any loss, claim, issue, damage, cost, or consequence
+                arising from or related to your use of, reliance on, or inability to use our platform or
+                any third-party platform. This includes direct, indirect, incidental, special, exemplary,
+                or consequential damages; failed verification; account loss; bans or suspensions; lost
+                profits; data loss; service interruption; and acts or omissions of third parties. Where
+                liability cannot lawfully be excluded, our total aggregate liability for any claim shall
+                not exceed the amount you paid to us in the 30 days preceding the event giving rise to the
+                claim.
               </p>
             </Section>
 

@@ -30,6 +30,7 @@ const STANDARD_SIDEBAR = [
   { label: "Wallet",            href: "/dashboard/wallet",       exact: false },
   { label: "Temporary Emails",  href: "/dashboard/temp-mail",    exact: false },
   { label: "Refer a Friend",    href: "/dashboard/referral",     exact: false, badge: "Earn ₦200" },
+  { label: "Reseller",          href: "/reseller",               exact: false },
 ];
 
 // Global page sidebar: All Countries → USA Numbers → Wallet → Refer a Friend
@@ -39,6 +40,7 @@ const GLOBAL_SIDEBAR = [
   { label: "Wallet",        href: "/dashboard/wallet",  exact: false },
   { label: "Temporary Emails", href: "/dashboard/temp-mail", exact: false },
   { label: "Refer a Friend", href: "/dashboard/referral", exact: false, badge: "Earn ₦200" },
+  { label: "Reseller", href: "/reseller", exact: false },
 ];
 
 const BOTTOM_NAV = [
@@ -132,6 +134,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       "/dashboard/profile":       "Profile",
       "/dashboard/referral":      "Refer a Friend",
       "/dashboard/temp-mail":     "Temporary Emails",
+      "/dashboard/support":       "Support Centre",
     };
     const title = PAGE_TITLES[pathname] ?? "Dashboard";
     document.title = `${title} - Temp Number`;
@@ -261,14 +264,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             Join Channel
           </a>
-          <a
-            href="https://wa.me/2349160421899"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/dashboard/support"
             className="flex items-center px-4 py-2.5 rounded-xl text-sm font-medium text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)] transition-all"
           >
             Contact Support
-          </a>
+          </Link>
         </div>
       </aside>
 
@@ -465,15 +466,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               >
                 Join Channel
               </a>
-              <a
-                href="https://wa.me/2349160421899"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/dashboard/support"
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
               >
                 Contact Support
-              </a>
+              </Link>
             </div>
           </div>
         </div>

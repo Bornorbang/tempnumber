@@ -43,7 +43,7 @@ const FAQS = [
   },
   {
     q: "How do I contact support?",
-    a: "Email us at support@tempnumber.ng or use the WhatsApp widget on our website. We respond within 24 hours on business days.",
+    a: "Sign in and open the Support Centre from your dashboard. Select the issue you are experiencing and submit the requested information so our team can investigate it.",
   },
 ];
 
@@ -97,13 +97,13 @@ export default function FAQPage() {
         <div className="mt-12 text-center p-6 bg-white dark:bg-[#111827] border border-slate-200 dark:border-white/10 rounded-2xl">
           <p className="text-slate-900 dark:text-white font-semibold mb-1">Still have questions?</p>
           <p className="text-slate-500 dark:text-gray-400 text-sm mb-4">
-            We&apos;re here to help. Reach out to our support team.
+            Select your issue and send the information our team needs to resolve it.
           </p>
           <a
-            href="/contact"
+            href="/dashboard/support"
             className="inline-block bg-green-500 hover:bg-green-400 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors"
           >
-            Contact Us
+            Open Support Centre
           </a>
         </div>
       </div>

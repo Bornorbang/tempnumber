@@ -91,9 +91,9 @@ export default function HomeFAQ() {
             View all FAQs
           </Link>{" "}
           or{" "}
-          <a href="mailto:support@tempnumber.ng" className="text-green-500 hover:underline font-medium">
+          <Link href="/dashboard/support" className="text-green-500 hover:underline font-medium">
             contact support
-          </a>
+          </Link>
           .
         </p>
       </div>
