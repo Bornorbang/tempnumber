@@ -100,10 +100,12 @@ function RentalRow({
   rental,
   addToast,
   onRefundDetected,
+  onRentalChanged,
 }: {
   rental: StoredRental;
   addToast: (type: "success" | "error", title: string, body: string) => void;
   onRefundDetected: () => void;
+  onRentalChanged: () => Promise<void>;
 }) {
   const isFivesim = rental.source === "fivesim";
   const [code, setCode]             = useState<string | null>(rental.sms_code ?? null);
@@ -113,6 +115,7 @@ function RentalRow({
   const [copied, setCopied]         = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [rerenting, setRerenting]   = useState(false);
 
   // Poll every 5 s while active and no code yet — branch on source
   useEffect(() => {
@@ -213,6 +216,28 @@ function RentalRow({
     }
   }
 
+  async function handleReRent() {
+    if (isFivesim || rerenting || status === "active") return;
+    setRerenting(true);
+    try {
+      const nextRental = await rentalsApi.reRent(rental.id);
+      addToast(
+        "success",
+        "Number rented again",
+        `${nextRental.number} · ₦${nextRental.price_ngn.toLocaleString()} deducted`
+      );
+      await onRentalChanged();
+    } catch (err) {
+      addToast(
+        "error",
+        "Could not rent again",
+        err instanceof ApiError ? err.message : "This number is not available right now."
+      );
+    } finally {
+      setRerenting(false);
+    }
+  }
+
   const isActive = status === "active";
   const flag = isFivesim && rental.country ? countryFlag(rental.country) : "🇺🇸";
 
@@ -280,6 +305,14 @@ function RentalRow({
             {cancelling ? (
               <><svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" /></svg>Cancelling</>
             ) : "Cancel"}
+          </button>
+        ) : !isFivesim ? (
+          <button
+            onClick={handleReRent}
+            disabled={rerenting}
+            className="inline-flex items-center gap-1.5 bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+          >
+            {rerenting ? "Renting..." : "Rent Again"}
           </button>
         ) : (
           <span className="text-gray-600 text-xs">—</span>
@@ -478,7 +511,16 @@ function RentalsPageInner() {
                     <tr><td colSpan={6} className="text-center py-16"><p className="text-gray-500 text-sm">No rentals match your search</p></td></tr>
                   ) : (
                     paginated.map((r) => (
-                      <RentalRow key={r.id} rental={r} addToast={addToast} onRefundDetected={refreshUser} />
+                      <RentalRow
+                        key={r.id}
+                        rental={r}
+                        addToast={addToast}
+                        onRefundDetected={refreshUser}
+                        onRentalChanged={async () => {
+                          await refreshUser();
+                          await loadRentals();
+                        }}
+                      />
                     ))
                   )}
                 </tbody>

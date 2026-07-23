@@ -29,6 +29,15 @@ const ISSUES = [
       "Each platform controls its own policies and account-review process. We cannot reverse or appeal its decision, so submitting a support request to us will not resolve this issue. Please contact the third-party platform directly if it offers an appeal process.",
     ],
   },
+  {
+    id: "withdraw_funds",
+    title: "I need to withdraw my funds",
+    kind: "information",
+    heading: "Wallet funds cannot be withdrawn",
+    paragraphs: [
+      "Funds added to your Temp Number wallet cannot be withdrawn, transferred, or refunded to a bank account or payment method. Your wallet balance remains available, and you may use it at any time to purchase a number on the platform.",
+    ],
+  },
 ] as const;
 
 function formatWait(seconds: number) {

@@ -33,10 +33,6 @@ type RentResult = {
 
 const NGN_RATE = 1600;
 
-function usdToNgn(usd: string | number) {
-  return (Math.ceil(Number(usd) * NGN_RATE) + 700).toLocaleString();
-}
-
 // ── Rental row with live TTL, code polling, and cancel ───────────────────────
 
 function RentalRow({
@@ -303,6 +299,9 @@ export default function USADashboardPage() {
   const [toastSeq, setToastSeq]             = useState(0);
   const [favorites, setFavorites]           = useState<Set<string>>(new Set());
   const [showDisabledModal, setShowDisabledModal] = useState(false);
+  const [specificOpen, setSpecificOpen]           = useState(false);
+  const [specificNumber, setSpecificNumber]       = useState("");
+  const [rentingSpecificService, setRentingSpecificService] = useState<string | null>(null);
   const autoRentDone                        = useRef(false);
 
   useEffect(() => {
@@ -456,7 +455,7 @@ export default function USADashboardPage() {
       }
 
       try {
-        await rentalsApi.save({
+        const savedRental = await rentalsApi.save({
           id:           data.id,
           number:       data.number,
           service_name: data.service_name,
@@ -467,13 +466,71 @@ export default function USADashboardPage() {
         });
         await refreshUser();
         await loadRecentRentals();
-      } catch { /* non-fatal */ }
-
-      addToast("success", `${data.service_name} number ready`, `${data.number}  ·  ₦${usdToNgn(data.price)} deducted`);
+        addToast(
+          "success",
+          `${data.service_name} number ready`,
+          `${data.number}  ·  ₦${savedRental.price_ngn.toLocaleString()} deducted`
+        );
+      } catch {
+        addToast(
+          "error",
+          "Charge could not be confirmed",
+          "The provider assigned a number, but we could not confirm the wallet charge. Refresh your rentals before trying again."
+        );
+      }
     } catch {
       addToast("error", "Network error", "Could not connect. Please try again.");
     } finally {
       setRentingService(null);
+    }
+  }
+
+  async function handleSpecificRent(service: Service) {
+    if (rentingSpecificService || rentingService) return;
+    const digits = specificNumber.replace(/\D/g, "");
+
+    if (user?.is_disabled) {
+      setShowDisabledModal(true);
+      return;
+    }
+    if (digits.length < 10 || digits.length > 15) {
+      addToast("error", "Invalid number", "Enter the exact phone number using 10 to 15 digits.");
+      return;
+    }
+    const activeCount = recentRentals.filter((r) =>
+      r.status === "active" || r.status === "success"
+    ).length;
+    if (activeCount >= 3) {
+      addToast("error", "Rental limit reached", "You have 3 active rentals. Wait for them to complete before renting another.");
+      return;
+    }
+
+    const estimatedNgn = Math.ceil(Number(service.price) * 1.4 * NGN_RATE) + 700;
+    if (user && user.wallet_balance < estimatedNgn) {
+      addToast("error", "Low balance", `You need approximately ₦${estimatedNgn.toLocaleString()} for this rental.`);
+      return;
+    }
+
+    setRentingSpecificService(service.api_name);
+    try {
+      const rental = await rentalsApi.rentSpecific(digits, service.api_name);
+      await refreshUser();
+      await loadRecentRentals();
+      setSpecificNumber("");
+      setSpecificOpen(false);
+      addToast(
+        "success",
+        `${rental.service_name} number ready`,
+        `${rental.number}  ·  ₦${rental.price_ngn.toLocaleString()} deducted`
+      );
+    } catch (err) {
+      addToast(
+        "error",
+        "Specific number unavailable",
+        err instanceof ApiError ? err.message : "Could not rent this number. Please try again."
+      );
+    } finally {
+      setRentingSpecificService(null);
     }
   }
 
@@ -547,13 +604,53 @@ export default function USADashboardPage() {
             <p className="text-gray-400 text-sm mt-1">
               Click any service to instantly rent USA number.
             </p>
-            <input
-              type="text"
-              placeholder="Search services&#8230;"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="mt-3 w-full bg-[var(--bg-card-inner)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-4 py-2.5 placeholder-gray-400 focus:outline-none focus:border-green-500 transition-colors"
-            />
+            <div className="relative mt-3">
+              <input
+                type="text"
+                placeholder="Search services&#8230;"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full bg-[var(--bg-card-inner)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl pl-4 pr-12 py-2.5 placeholder-gray-400 focus:outline-none focus:border-green-500 transition-colors"
+              />
+              <button
+                type="button"
+                onClick={() => setSpecificOpen((open) => !open)}
+                aria-label="Rent a specific number"
+                title="Rent a specific number"
+                className={`absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${
+                  specificOpen
+                    ? "bg-green-500 text-white"
+                    : "text-gray-400 hover:text-green-500 hover:bg-green-500/10"
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 01.8 1.6L14 13.667V19a1 1 0 01-.553.894l-4 2A1 1 0 018 21v-7.333L3.2 4.6A1 1 0 013 4z" />
+                </svg>
+              </button>
+            </div>
+
+            {specificOpen && (
+              <div className="mt-3 rounded-xl border border-green-500/25 bg-green-500/5 p-4 space-y-3">
+                <div>
+                  <h3 className="text-[var(--text-primary)] text-sm font-semibold">Rent a Specific Number</h3>
+                </div>
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  value={specificNumber}
+                  onChange={(event) => setSpecificNumber(event.target.value.replace(/\D/g, ""))}
+                  placeholder="Exact phone number (digits only)"
+                  maxLength={15}
+                  className="w-full bg-[var(--bg-card-inner)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-green-500"
+                />
+                <p className="flex items-center gap-1.5 text-amber-500 text-[10px] leading-4">
+                  <svg className="w-3 h-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Specific-number rentals include a 40% price increase.
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="overflow-y-auto" style={{ maxHeight: "420px" }}>
@@ -594,13 +691,27 @@ export default function USADashboardPage() {
                   </tr>
                 ) : (
                   filtered.map((s) => {
-                    const isRenting = rentingService === s.api_name;
-                    const busy      = rentingService !== null;
+                    const isRenting = rentingService === s.api_name || rentingSpecificService === s.api_name;
+                    const busy      = rentingService !== null || rentingSpecificService !== null;
                     const isFav     = favorites.has(s.api_name);
+                    const shownPrice = specificOpen
+                      ? Math.ceil(Number(s.price) * 1.4 * NGN_RATE) + 700
+                      : Math.ceil(Number(s.price) * NGN_RATE) + 700;
                     return (
                       <tr
                         key={s.api_name}
-                        onClick={() => !busy && handleRent(s)}
+                        onClick={() => {
+                          if (busy) return;
+                          if (specificOpen) {
+                            if (!specificNumber) {
+                              addToast("error", "Enter a number", "Enter the exact phone number before selecting a service.");
+                              return;
+                            }
+                            handleSpecificRent(s);
+                          } else {
+                            handleRent(s);
+                          }
+                        }}
                         className={`border-b border-[var(--border-color)] transition-colors ${
                           busy
                             ? "opacity-60 cursor-not-allowed"
@@ -622,7 +733,7 @@ export default function USADashboardPage() {
                         </td>
                         <td className="px-4 py-2 text-right">
                           <span className="text-[var(--text-primary)] text-xs">
-                            &#8358;{usdToNgn(s.price)}
+                            &#8358;{shownPrice.toLocaleString()}
                           </span>
                         </td>
                         <td className="px-3 py-2 text-center" onClick={(e) => e.stopPropagation()}>

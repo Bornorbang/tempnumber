@@ -108,6 +108,11 @@ export type StoredRental = {
   country?: string | null;      // 5sim country code, null for getatext
 };
 
+type NewGetatextRental = StoredRental & {
+  new_balance: number;
+  returning_customer?: boolean;
+};
+
 export const rentalsApi = {
   list: () => apiFetch<StoredRental[]>("/rentals/index.php"),
 
@@ -147,6 +152,18 @@ export const rentalsApi = {
       "/rentals/poll-status.php",
       { method: "POST", body: JSON.stringify({ getatext_id }) }
     ),
+
+  reRent: (rental_id: number) =>
+    apiFetch<NewGetatextRental>("/rentals/re-rent.php", {
+      method: "POST",
+      body: JSON.stringify({ rental_id }),
+    }),
+
+  rentSpecific: (number: string, service: string) =>
+    apiFetch<NewGetatextRental>("/rentals/rent-specific.php", {
+      method: "POST",
+      body: JSON.stringify({ number, service }),
+    }),
 };
 
 // ── Wallet ────────────────────────────────────────────────────────────────────
