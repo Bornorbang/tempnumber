@@ -38,6 +38,35 @@ const ISSUES = [
       "Funds added to your Temp Number wallet cannot be withdrawn, transferred, or refunded to a bank account or payment method. Your wallet balance remains available, and you may use it at any time to purchase a number on the platform.",
     ],
   },
+  {
+    id: "rerent_specific_number",
+    title: "I want to rent a specific number again",
+    kind: "information",
+    heading: "You can rent a specific number again",
+    paragraphs: [
+      <>
+        You can now choose a specific number from your{" "}
+        <a href="/dashboard/usa" className="text-green-500 hover:underline">USA dashboard</a>{" "}
+        or rent a previous number again from your{" "}
+        <a href="/dashboard/rentals" className="text-green-500 hover:underline">Rentals page</a>.
+      </>,
+      "If you receive an error when trying to rent the number again, it means the number is no longer available.",
+      <>
+        If you need to keep a number for longer, use our{" "}
+        <a href="/dashboard/long-term" className="text-green-500 hover:underline">long-term service numbers</a>.
+      </>,
+    ],
+  },
+  {
+    id: "insufficient_balance",
+    title: "My order says I have insufficient balance",
+    kind: "information",
+    heading: "Add more funds to your wallet",
+    paragraphs: [
+      "This issue is common on the Global dashboard because the final price of a service may be higher than the price initially shown.",
+      "Please top up your wallet with enough funds to cover the updated price, then try renting the number again.",
+    ],
+  },
 ] as const;
 
 function formatWait(seconds: number) {
@@ -132,20 +161,26 @@ export default function SupportPage() {
       )}
 
       {!selected && (
-        <div className="grid gap-3">
-          {ISSUES.map((issue) => (
-            <button
-              key={issue.id}
-              type="button"
-              onClick={() => { setSelectedId(issue.id); setError(""); }}
-              className="w-full text-left bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-green-500/40 rounded-2xl p-5 transition-colors flex items-center justify-between gap-4"
-            >
-              <span className="text-[var(--text-primary)] text-sm font-semibold">{issue.title}</span>
-              <svg className="w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          ))}
+        <div className="space-y-4">
+          <div className="grid gap-3">
+            {ISSUES.map((issue) => (
+              <button
+                key={issue.id}
+                type="button"
+                onClick={() => { setSelectedId(issue.id); setError(""); }}
+                className="w-full text-left bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-green-500/40 rounded-2xl p-5 transition-colors flex items-center justify-between gap-4"
+              >
+                <span className="text-[var(--text-primary)] text-sm font-semibold">{issue.title}</span>
+                <svg className="w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 text-center">
+            Still need to contact us? Email{" "}
+            <a href="mailto:support@tempnumber.ng" className="text-green-500 hover:underline">support@tempnumber.ng</a>
+          </p>
         </div>
       )}
 
@@ -158,7 +193,7 @@ export default function SupportPage() {
           <div>
             <h2 className="text-[var(--text-primary)] font-semibold text-lg">{selected.heading}</h2>
             <div className="mt-3 space-y-3">
-              {selected.paragraphs.map((paragraph) => <p key={paragraph} className="text-gray-400 text-sm leading-6">{paragraph}</p>)}
+              {selected.paragraphs.map((paragraph, index) => <p key={index} className="text-gray-400 text-sm leading-6">{paragraph}</p>)}
             </div>
           </div>
         </div>
