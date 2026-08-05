@@ -276,18 +276,25 @@ function OrderRow({
   const [codeCopied, setCodeCopied] = useState(false);
   const [cancelling, setCancelling] = useState(false);
 
-  // Poll 5sim every 5 s while active and no code yet
+  // Poll sequentially and abort checks when cancellation begins.
   useEffect(() => {
-    if (status !== "active" || code !== null) return;
-    const interval = setInterval(async () => {
+    if (status !== "active" || code !== null || cancelling) return;
+    let stopped = false;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    let controller: AbortController | undefined;
+
+    async function poll() {
+      controller = new AbortController();
       try {
         const res = await fetch("/api/fivesim/check", {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
           body: JSON.stringify({ order_id: order.getatext_id }),
+          signal: controller.signal,
         });
         if (!res.ok) return;
         const data = await res.json();
+        if (stopped) return;
         if (data.sms_code) {
           setCode(data.sms_code);
           addToast("success", "Code received!", `${order.service_name.replace(/_/g, " ")}: ${data.sms_code}`);
@@ -300,11 +307,18 @@ function OrderRow({
         } else if (data.status !== "active") {
           setStatus(data.status);
         }
-      } catch { /* ignore */ }
-    }, 5000);
-    return () => clearInterval(interval);
+      } catch { /* aborted/network errors are retried */ }
+      finally { if (!stopped) timeout = setTimeout(poll, 5000); }
+    }
+
+    timeout = setTimeout(poll, 5000);
+    return () => {
+      stopped = true;
+      if (timeout) clearTimeout(timeout);
+      controller?.abort();
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, code]);
+  }, [status, code, cancelling]);
 
   async function handleCopy() {
     try { await navigator.clipboard.writeText(order.number); setCopied(true); setTimeout(() => setCopied(false), 2000); } catch { /* ignore */ }

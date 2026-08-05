@@ -120,7 +120,10 @@ function RentalRow({
   // Poll every 5 s while active and no code yet — branch on source
   useEffect(() => {
     if (status !== "active" || code !== null) return;
+    let fivesimRequestInFlight = false;
     const interval = setInterval(async () => {
+      if (isFivesim && fivesimRequestInFlight) return;
+      if (isFivesim) fivesimRequestInFlight = true;
       try {
         if (isFivesim) {
           // ── 5sim poll ─────────────────────────────────────────────────────
@@ -160,6 +163,9 @@ function RentalRow({
           }
         }
       } catch { /* ignore */ }
+      finally {
+        if (isFivesim) fivesimRequestInFlight = false;
+      }
     }, 5000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
