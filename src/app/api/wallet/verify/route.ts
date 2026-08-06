@@ -80,6 +80,7 @@ export async function POST(req: NextRequest) {
   // If JWT_SECRET is missing or mismatched, fall back to asking PHP /auth/me.php
   // so a JWT_SECRET misconfiguration never blocks a legitimate payment.
   let userId: number | undefined;
+  let userEmail: string | undefined;
 
   if (JWT_SECRET && rawToken) {
     const jwtPayload = verifyJWT(rawToken, JWT_SECRET);
@@ -87,14 +88,16 @@ export async function POST(req: NextRequest) {
   }
 
   // Fallback: ask PHP to validate the token when local check fails
-  if (!userId && rawToken && PHP_API) {
+  if (rawToken && PHP_API) {
     try {
       const meRes = await fetch(`${PHP_API}/auth/me.php`, {
         headers: { Authorization: `Bearer ${rawToken}` },
+        cache: "no-store",
       });
       if (meRes.ok) {
-        const meData = await meRes.json().catch(() => ({})) as { id?: number };
+        const meData = await meRes.json().catch(() => ({})) as { id?: number; email?: string };
         if (meData.id) userId = meData.id;
+        if (meData.email) userEmail = meData.email;
       }
     } catch { /* network error — fall through to the error below */ }
   }
@@ -107,6 +110,21 @@ export async function POST(req: NextRequest) {
           "Contact support with reference: " + reference,
       },
       { status: 401 }
+    );
+  }
+
+  // Bind the Paystack transaction to the account that initialized it. New
+  // payments carry our internal user ID; legacy in-flight payments fall back
+  // to matching Paystack's verified customer email.
+  const paymentUserId = Number(psData.data.metadata?.temp_number_user_id || 0);
+  const paymentEmail = String(psData.data.customer?.email ?? "").trim().toLowerCase();
+  if (
+    (paymentUserId > 0 && paymentUserId !== userId) ||
+    (paymentUserId <= 0 && (!userEmail || paymentEmail !== userEmail.trim().toLowerCase()))
+  ) {
+    return NextResponse.json(
+      { error: "This payment belongs to a different account." },
+      { status: 403 }
     );
   }
 

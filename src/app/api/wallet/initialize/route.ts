@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
+const PHP_API = process.env.NEXT_PUBLIC_API_URL;
 
 export async function POST(req: NextRequest) {
   if (!PAYSTACK_SECRET) {
@@ -14,13 +15,32 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
-  const { amount, email } = body;
+  const { amount } = body;
 
   if (!amount || typeof amount !== "number" || amount < 100) {
     return NextResponse.json({ error: "Minimum top-up amount is ₦100" }, { status: 400 });
   }
-  if (!email || typeof email !== "string") {
-    return NextResponse.json({ error: "User email is required" }, { status: 400 });
+  if (!PHP_API) {
+    return NextResponse.json({ error: "Backend not configured" }, { status: 500 });
+  }
+
+  const authHeader = req.headers.get("authorization") ?? "";
+  if (!authHeader) {
+    return NextResponse.json({ error: "Please sign in again before topping up" }, { status: 401 });
+  }
+
+  let account: { id?: number; email?: string };
+  try {
+    const meRes = await fetch(`${PHP_API}/auth/me.php`, {
+      headers: { Authorization: authHeader },
+      cache: "no-store",
+    });
+    account = await meRes.json().catch(() => ({}));
+    if (!meRes.ok || !account.id || !account.email) {
+      return NextResponse.json({ error: "Please sign in again before topping up" }, { status: 401 });
+    }
+  } catch {
+    return NextResponse.json({ error: "Could not verify your account. Please try again." }, { status: 502 });
   }
 
   // Build callback URL from the incoming request origin
@@ -36,11 +56,11 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email,
+        email: account.email,
         amount: Math.round(amount * 100), // Paystack uses kobo
         callback_url,
         channels: ["card", "bank", "ussd", "bank_transfer"],
-        metadata: { amount_ngn: amount },
+        metadata: { amount_ngn: amount, temp_number_user_id: account.id },
       }),
     });
   } catch {
