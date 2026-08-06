@@ -25,12 +25,15 @@ export default function AdminRentalsPage() {
   const [total, setTotal]     = useState(0);
   const [loading, setLoading] = useState(true);
   const [search, setSearch]   = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
 
   function getToken() { return localStorage.getItem("tn_token") ?? ""; }
 
-  const load = useCallback((q = "") => {
+  const load = useCallback((q = "", status = "", from = "", to = "") => {
     setLoading(true);
-    const qs = new URLSearchParams({ search: q, limit: "200" }).toString();
+    const qs = new URLSearchParams({ search: q, status, date_from: from, date_to: to, limit: "200" }).toString();
     fetch(`/api/admin/rentals?${qs}`, { headers: { Authorization: `Bearer ${getToken()}` } })
       .then((r) => r.json())
       .then((data) => { setRows(data.rows ?? []); setTotal(data.total ?? 0); })
@@ -38,7 +41,10 @@ export default function AdminRentalsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const timer = setTimeout(() => load(), 0);
+    return () => clearTimeout(timer);
+  }, [load]);
 
   return (
     <div className="space-y-6 max-w-6xl">
@@ -47,13 +53,57 @@ export default function AdminRentalsPage() {
           <h1 className="text-[var(--text-primary)] text-2xl font-bold">Rental History</h1>
           <p className="text-gray-400 text-sm mt-1">{total} total rental{total !== 1 ? "s" : ""} across all users</p>
         </div>
-        <input
+        <div className="flex items-center gap-2 flex-wrap">
+          <select
+            value={statusFilter}
+            onChange={(e) => { setStatusFilter(e.target.value); load(search, e.target.value, dateFrom, dateTo); }}
+            className="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-green-500"
+          >
+            <option value="">All statuses</option>
+            <option value="active">Active</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="completed">Completed</option>
+            <option value="expired">Expired</option>
+          </select>
+          <input
           type="text"
           placeholder="Search user, number or service…"
           value={search}
-          onChange={(e) => { setSearch(e.target.value); load(e.target.value); }}
+          onChange={(e) => { setSearch(e.target.value); load(e.target.value, statusFilter, dateFrom, dateTo); }}
           className="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-green-500 w-64"
-        />
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 flex-wrap">
+        <label className="flex items-center gap-2 text-xs text-gray-400">
+          From
+          <input
+            type="date"
+            value={dateFrom}
+            max={dateTo || undefined}
+            onChange={(e) => { setDateFrom(e.target.value); load(search, statusFilter, e.target.value, dateTo); }}
+            className="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-green-500"
+          />
+        </label>
+        <label className="flex items-center gap-2 text-xs text-gray-400">
+          To
+          <input
+            type="date"
+            value={dateTo}
+            min={dateFrom || undefined}
+            onChange={(e) => { setDateTo(e.target.value); load(search, statusFilter, dateFrom, e.target.value); }}
+            className="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-green-500"
+          />
+        </label>
+        {(dateFrom || dateTo) && (
+          <button
+            onClick={() => { setDateFrom(""); setDateTo(""); load(search, statusFilter); }}
+            className="text-xs text-gray-400 hover:text-red-400 transition-colors px-2 py-2"
+          >
+            Clear dates
+          </button>
+        )}
       </div>
 
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl overflow-hidden">

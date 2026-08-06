@@ -30,13 +30,17 @@ export default function AdminWalletHistoryPage() {
   const [loading, setLoading]           = useState(true);
   const [search, setSearch]             = useState("");
   const [typeFilter, setTypeFilter]     = useState<"" | "credit" | "debit">("");
+  const [dateFrom, setDateFrom]         = useState("");
+  const [dateTo, setDateTo]             = useState("");
   const [page, setPage]                 = useState(0);
 
-  const load = useCallback((q = "", t = "", p = 0) => {
+  const load = useCallback((q = "", t = "", from = "", to = "", p = 0) => {
     setLoading(true);
     const qs = new URLSearchParams({
       search: q,
       type: t,
+      date_from: from,
+      date_to: to,
       limit: String(PAGE_SIZE),
       offset: String(p * PAGE_SIZE),
     }).toString();
@@ -54,13 +58,19 @@ export default function AdminWalletHistoryPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const timer = setTimeout(() => load(), 0);
+    return () => clearTimeout(timer);
+  }, [load]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
-  function handleSearch(val: string) { setSearch(val); setPage(0); load(val, typeFilter, 0); }
-  function handleType(val: "" | "credit" | "debit") { setTypeFilter(val); setPage(0); load(search, val, 0); }
-  function goToPage(p: number) { setPage(p); load(search, typeFilter, p); }
+  function handleSearch(val: string) { setSearch(val); setPage(0); load(val, typeFilter, dateFrom, dateTo, 0); }
+  function handleType(val: "" | "credit" | "debit") { setTypeFilter(val); setPage(0); load(search, val, dateFrom, dateTo, 0); }
+  function handleDateFrom(val: string) { setDateFrom(val); setPage(0); load(search, typeFilter, val, dateTo, 0); }
+  function handleDateTo(val: string) { setDateTo(val); setPage(0); load(search, typeFilter, dateFrom, val, 0); }
+  function clearDates() { setDateFrom(""); setDateTo(""); setPage(0); load(search, typeFilter, "", "", 0); }
+  function goToPage(p: number) { setPage(p); load(search, typeFilter, dateFrom, dateTo, p); }
 
   return (
     <div className="space-y-6 max-w-6xl">
@@ -101,6 +111,33 @@ export default function AdminWalletHistoryPage() {
             onChange={(e) => handleSearch(e.target.value)}
             className="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-4 py-2 placeholder-gray-500 focus:outline-none focus:border-green-500 w-56"
           />
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <label className="flex items-center gap-2 text-xs text-gray-400">
+            From
+            <input
+              type="date"
+              value={dateFrom}
+              max={dateTo || undefined}
+              onChange={(e) => handleDateFrom(e.target.value)}
+              className="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-green-500"
+            />
+          </label>
+          <label className="flex items-center gap-2 text-xs text-gray-400">
+            To
+            <input
+              type="date"
+              value={dateTo}
+              min={dateFrom || undefined}
+              onChange={(e) => handleDateTo(e.target.value)}
+              className="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-3 py-2 focus:outline-none focus:border-green-500"
+            />
+          </label>
+          {(dateFrom || dateTo) && (
+            <button onClick={clearDates} className="text-xs text-gray-400 hover:text-red-400 transition-colors px-2 py-2">
+              Clear dates
+            </button>
+          )}
         </div>
       </div>
 

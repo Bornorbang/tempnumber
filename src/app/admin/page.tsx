@@ -20,9 +20,9 @@ export default function AdminOverviewPage() {
         const userArr   = Array.isArray(users) ? users : [];
         setStats({
           users:   userArr.length,
-          rentals: rentals?.received_total ?? 0,
-          topups:  topups?.total  ?? 0,
-          revenue: rentals?.received_revenue ?? 0,
+          rentals: rentals?.completed_total ?? 0,
+          topups:  topups?.credited_total ?? 0,
+          revenue: rentals?.verified_revenue ?? 0,
         });
       })
       .catch(() => {})
@@ -30,10 +30,10 @@ export default function AdminOverviewPage() {
   }, []);
 
   const cards = [
-    { label: "Total Users",       value: stats?.users ?? 0,                     fmt: (v: number) => v.toLocaleString(),                              href: "/admin/users",          color: "text-blue-400"   },
-    { label: "Total Rentals",     value: stats?.rentals ?? 0,                   fmt: (v: number) => v.toLocaleString(),                              href: "/admin/rentals",        color: "text-purple-400" },
-    { label: "Total Top-Ups",     value: stats?.topups ?? 0,                    fmt: (v: number) => v.toLocaleString(),                              href: "/admin/wallet-history", color: "text-yellow-400" },
-    { label: "Verified Revenue",  value: stats?.revenue ?? 0,                   fmt: (v: number) => `₦${v.toLocaleString("en-NG", { minimumFractionDigits: 2 })}`, href: "/admin/wallet-history", color: "text-green-400"  },
+    { label: "Total Users",       value: stats?.users ?? 0,                     fmt: (v: number) => v.toLocaleString(),                              href: "/admin/users",          color: "text-blue-400",   valueSize: "text-2xl" },
+    { label: "Total Rentals",     value: stats?.rentals ?? 0,                   fmt: (v: number) => v.toLocaleString(),                              href: "/admin/rentals",        color: "text-purple-400", valueSize: "text-2xl" },
+    { label: "Total Top-Ups",     value: stats?.topups ?? 0,                    fmt: (v: number) => `₦${v.toLocaleString("en-NG", { minimumFractionDigits: 2 })}`, href: "/admin/wallet-history", color: "text-yellow-400", valueSize: "text-lg" },
+    { label: "Verified Revenue",  value: stats?.revenue ?? 0,                   fmt: (v: number) => `₦${v.toLocaleString("en-NG", { minimumFractionDigits: 2 })}`, href: "/admin/wallet-history", color: "text-green-400",  valueSize: "text-lg" },
   ];
 
   return (
@@ -59,7 +59,7 @@ export default function AdminOverviewPage() {
               className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-5 hover:border-green-500/40 transition-colors block"
             >
               <p className="text-gray-400 text-xs mb-1">{c.label}</p>
-              <p className={`text-2xl font-bold ${c.color}`}>{c.fmt(c.value)}</p>
+              <p className={`${c.valueSize} font-bold ${c.color} break-words`}>{c.fmt(c.value)}</p>
             </Link>
           ))}
         </div>

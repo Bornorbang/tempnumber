@@ -5,9 +5,12 @@ const PHP = process.env.NEXT_PUBLIC_API_URL ?? "";
 export async function GET(req: NextRequest) {
   const sp     = req.nextUrl.searchParams;
   const search = sp.get("search") ?? "";
+  const status = sp.get("status") ?? "";
+  const dateFrom = sp.get("date_from") ?? "";
+  const dateTo   = sp.get("date_to") ?? "";
   const limit  = sp.get("limit")  ?? "200";
   const offset = sp.get("offset") ?? "0";
-  const qs = new URLSearchParams({ search, limit, offset }).toString();
+  const qs = new URLSearchParams({ search, status, date_from: dateFrom, date_to: dateTo, limit, offset }).toString();
   const auth = req.headers.get("authorization") ?? "";
   const res = await fetch(`${PHP}/admin/rentals.php?${qs}`, {
     headers: auth ? { Authorization: auth } : {},

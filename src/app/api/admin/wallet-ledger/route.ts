@@ -8,7 +8,9 @@ export async function GET(req: NextRequest) {
   const type   = sp.get("type")   ?? "";
   const limit  = sp.get("limit")  ?? "200";
   const offset = sp.get("offset") ?? "0";
-  const qs     = new URLSearchParams({ search, type, limit, offset }).toString();
+  const dateFrom = sp.get("date_from") ?? "";
+  const dateTo   = sp.get("date_to")   ?? "";
+  const qs = new URLSearchParams({ search, type, date_from: dateFrom, date_to: dateTo, limit, offset }).toString();
   const auth   = req.headers.get("authorization") ?? "";
   const res    = await fetch(`${PHP}/admin/wallet-ledger.php?${qs}`, {
     headers: auth ? { Authorization: auth } : {},
