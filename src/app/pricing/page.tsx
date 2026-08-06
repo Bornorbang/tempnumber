@@ -6,10 +6,10 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const NGN_RATE = 1600;
-const FIVESIM_MARGIN = 700;
+const FIVESIM_MARGIN = 800;
 
 function usdToNgn(usd: string | number) {
-  return (Math.ceil(Number(usd) * NGN_RATE) + 700).toLocaleString();
+  return (Math.ceil(Number(usd) * NGN_RATE) + 800).toLocaleString();
 }
 function fivesimToNgn(price: number) {
   return (Math.ceil(price * NGN_RATE) + FIVESIM_MARGIN).toLocaleString();

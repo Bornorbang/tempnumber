@@ -434,7 +434,7 @@ export default function USADashboardPage() {
       return;
     }
 
-    const costNgn = Math.ceil(Number(s.price) * NGN_RATE) + 700;
+    const costNgn = Math.ceil(Number(s.price) * NGN_RATE) + 800;
     if (user && user.wallet_balance < costNgn) {
       addToast("error", "Low balance", "Please top up wallet.");
       return;
@@ -505,7 +505,7 @@ export default function USADashboardPage() {
       return;
     }
 
-    const estimatedNgn = Math.ceil(Number(service.price) * 1.4 * NGN_RATE) + 700;
+    const estimatedNgn = Math.ceil(Number(service.price) * 1.4 * NGN_RATE) + 800;
     if (user && user.wallet_balance < estimatedNgn) {
       addToast("error", "Low balance", `You need approximately ₦${estimatedNgn.toLocaleString()} for this rental.`);
       return;
@@ -695,8 +695,8 @@ export default function USADashboardPage() {
                     const busy      = rentingService !== null || rentingSpecificService !== null;
                     const isFav     = favorites.has(s.api_name);
                     const shownPrice = specificOpen
-                      ? Math.ceil(Number(s.price) * 1.4 * NGN_RATE) + 700
-                      : Math.ceil(Number(s.price) * NGN_RATE) + 700;
+                      ? Math.ceil(Number(s.price) * 1.4 * NGN_RATE) + 800
+                      : Math.ceil(Number(s.price) * NGN_RATE) + 800;
                     return (
                       <tr
                         key={s.api_name}
