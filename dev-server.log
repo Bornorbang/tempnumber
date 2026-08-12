@@ -1,0 +1,48 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.192:3000
+- Environments: .env.local
+✓ Ready in 1993ms
+Creating turbopack project {
+  dir: 'C:\\Users\\WDN\\Desktop\\Temp Number\\frontend',
+  testMode: true
+}
+
+ GET /dashboard/support 200 in 858ms (next.js: 464ms, application-code: 394ms)
+ GET /dashboard/support 200 in 366ms (next.js: 17ms, application-code: 350ms)
+ GET /auth/signin 200 in 326ms (next.js: 108ms, application-code: 218ms)
+ GET /auth/signin 200 in 467ms (next.js: 28ms, application-code: 438ms)
+ GET /dashboard 200 in 117ms (next.js: 70ms, application-code: 46ms)
+ GET /dashboard/usa 200 in 230ms (next.js: 127ms, application-code: 104ms)
+ GET /api/updates 200 in 723ms (next.js: 338ms, application-code: 385ms)
+ GET /api/updates 200 in 823ms (next.js: 375ms, application-code: 448ms)
+ GET /api/prices 500 in 1126ms (next.js: 188ms, application-code: 937ms)
+ GET /api/prices 500 in 200ms (next.js: 11ms, application-code: 189ms)
+ GET /dashboard/support 200 in 47ms (next.js: 7ms, application-code: 40ms)
+ GET /api/support 404 in 139ms (next.js: 106ms, application-code: 33ms)
+ GET /api/support 404 in 26ms (next.js: 6ms, application-code: 20ms)
+ GET /dashboard/announcements 200 in 125ms (next.js: 72ms, application-code: 53ms)
+ GET /api/admin/announcements 200 in 269ms (next.js: 124ms, application-code: 144ms)
+ GET /api/admin/announcements 200 in 55ms (next.js: 7ms, application-code: 48ms)
+✓ Compiled in 595ms
+ GET /dashboard/announcements 200 in 279ms (next.js: 187ms, application-code: 92ms)
+ GET /auth/signin 200 in 199ms (next.js: 76ms, application-code: 123ms)
+ GET /dashboard/support 200 in 1050ms (next.js: 618ms, application-code: 432ms)
+ GET /api/support 404 in 270ms (next.js: 220ms, application-code: 50ms)
+ GET /api/support 404 in 32ms (next.js: 7ms, application-code: 25ms)
+✓ Compiled in 363ms
+ GET /auth/signin 200 in 949ms (next.js: 306ms, application-code: 644ms)
+ GET /dashboard/support 200 in 492ms (next.js: 332ms, application-code: 160ms)
+✓ Compiled in 274ms
+ GET /auth/signin 200 in 1033ms (next.js: 320ms, application-code: 713ms)
+ GET /dashboard/support 200 in 586ms (next.js: 460ms, application-code: 126ms)
+ GET /dashboard/support 200 in 1143ms (next.js: 179ms, application-code: 964ms)
+ GET /api/support 404 in 201ms (next.js: 142ms, application-code: 59ms)
+ GET /api/support 404 in 12ms (next.js: 3ms, application-code: 9ms)
+ GET /auth/signin 200 in 2.2s (next.js: 315ms, application-code: 1870ms)
+ GET /dashboard/global 200 in 900ms (next.js: 352ms, application-code: 548ms)
+[?25h
