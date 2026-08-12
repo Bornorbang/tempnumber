@@ -47,11 +47,11 @@ export default function Hero() {
               href={isAuthed ? "/dashboard" : "/auth/signup"}
               className="bg-green-500 hover:bg-green-400 text-white font-semibold px-6 py-3 rounded-xl text-sm transition-all hover:shadow-lg hover:shadow-green-500/25 text-center"
             >
-              {isAuthed ? "Dashboard" : "Get Started"}
+              {isAuthed ? "Dashboard" : "Order Now"}
             </Link>
             <Link
               href="/pricing"
-              className="border border-slate-300 dark:border-white/20 hover:border-slate-400 dark:hover:border-white/40 text-slate-700 dark:text-white font-medium px-6 py-3 rounded-xl text-sm transition-colors text-center"
+              className="hidden sm:block border border-slate-300 dark:border-white/20 hover:border-slate-400 dark:hover:border-white/40 text-slate-700 dark:text-white font-medium px-6 py-3 rounded-xl text-sm transition-colors text-center"
             >
               View Pricing
             </Link>
