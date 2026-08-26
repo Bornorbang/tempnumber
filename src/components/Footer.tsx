@@ -10,6 +10,13 @@ const LINKS = {
     { label: "Temporary Email",    href: "/temporary-email" },
     { label: "Resellers",          href: "/reseller" },
   ],
+  "Other Services": [
+    { label: "Domain Registration", href: "https://portal.hostingnigeria.com/domainchecker.php" },
+    { label: "Web Hosting", href: "https://portal.hostingnigeria.com/index.php?rp=/store/web-hosting" },
+    { label: "WordPress Hosting", href: "https://portal.hostingnigeria.com/index.php?rp=/store/wordpress-hosting" },
+    { label: "Temporary Hosting", href: "https://hostingnigeria.com/temporary-hosting-plan/" },
+    { label: "SSL Certificate", href: "https://portal.hostingnigeria.com/index.php?rp=/store/ssl-certificates" },
+  ],
   Support: [
     { label: "FAQ",              href: "/faq" },
     { label: "Join Channel",     href: "https://whatsapp.com/channel/0029Vb7uTgC30LKUfBRj3p2L" },
@@ -22,7 +29,7 @@ export default function Footer() {
   return (
     <footer className="bg-[var(--bg-page)] border-t border-slate-200 dark:border-white/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-10">
           {/* Brand */}
           <div className="col-span-2 md:col-span-2">
             <Link href="/" className="inline-flex items-center gap-2 mb-3">
@@ -82,6 +89,8 @@ export default function Footer() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
+                      target={link.href.startsWith("http") ? "_blank" : undefined}
+                      rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
                       className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white text-sm transition-colors"
                     >
                       {link.label}
