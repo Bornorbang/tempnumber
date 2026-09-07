@@ -221,7 +221,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all ${
+                className={`flex items-center justify-between px-4 py-2 rounded-xl text-xs font-medium transition-all ${
                   active
                     ? "bg-green-500/10 text-green-500 border border-green-500/20"
                     : "text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)]"
@@ -241,7 +241,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="my-2 border-t border-[var(--border-color)]" />
               <Link
                 href="/admin"
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium transition-all ${
                   pathname.startsWith("/admin")
                     ? "bg-green-500/10 text-green-500 border border-green-500/20"
                     : "text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)]"
@@ -262,13 +262,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             href="https://whatsapp.com/channel/0029Vb7uTgC30LKUfBRj3p2L"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center px-4 py-2.5 rounded-xl text-[13px] font-medium text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)] transition-all"
+            className="flex items-center px-4 py-2 rounded-xl text-xs font-medium text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)] transition-all"
           >
             Join Channel
           </a>
           <Link
             href="/dashboard/support"
-            className="flex items-center px-4 py-2.5 rounded-xl text-[13px] font-medium text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)] transition-all"
+            className="flex items-center px-4 py-2 rounded-xl text-xs font-medium text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)] transition-all"
           >
             Contact Support
           </Link>

@@ -64,7 +64,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center px-4 py-2 rounded-xl text-xs font-medium transition-all ${
                   active
                     ? "bg-green-500/10 text-green-500 border border-green-500/20"
                     : "text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)]"
@@ -77,7 +77,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div className="my-2 border-t border-[var(--border-color)]" />
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
           >
             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
