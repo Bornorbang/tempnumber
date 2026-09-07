@@ -179,7 +179,7 @@ export default function RewardsPage() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card title="Monthly spending" description="Spend ₦50,000 this month across Temp Number, including API orders." item={data.monthly} reward={2000} type="monthly" onClaim={claim} busy={busy} format={money} />
         <Card title="7-day order streak" description="Complete at least one order each day for seven consecutive days." item={data.streak} reward={1000} type="streak" onClaim={claim} busy={busy} />
-        <Card title="Rental cashback" description="Earn 1% on completed dashboard number rentals. Claim from ₦1,000." item={data.cashback} reward={data.cashback.current} type="cashback" onClaim={claim} busy={busy} format={money} />
+        <Card title="Rental cashback" description="Earn 1% on completed dashboard number rentals. Claim from ₦1,000." item={data.cashback} reward={data.cashback.current} rewardText="1%" type="cashback" onClaim={claim} busy={busy} format={money} />
         <Card title="Top-up bonus" description="Earn 5% whenever top-up wallet with at least ₦100,000." item={data.topup} reward={data.topup.current} rewardText="5%" hideCounter type="topup" onClaim={claim} busy={busy} format={money} />
         <Card title="Referral milestones" description="Rewards unlock when referred users complete their first order." item={data.referrals} reward={nextReferralReward} type="referrals" onClaim={claim} busy={busy} />
       </div>
