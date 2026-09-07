@@ -27,6 +27,8 @@ function Card({
   description,
   item,
   reward,
+  rewardText,
+  hideCounter = false,
   type,
   onClaim,
   busy,
@@ -36,6 +38,8 @@ function Card({
   description: string;
   item: Item;
   reward: number;
+  rewardText?: string;
+  hideCounter?: boolean;
   type: string;
   onClaim: (type: string) => void;
   busy: string;
@@ -78,12 +82,10 @@ function Card({
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <div className="mt-2 flex items-center justify-between gap-4 text-xs font-medium text-[var(--text-secondary)]">
-        <span>
-          {format(item.current)} / {format(item.target)}
-        </span>
+      <div className={`mt-2 flex items-center gap-4 text-xs font-medium text-[var(--text-secondary)] ${hideCounter ? "justify-end" : "justify-between"}`}>
+        {!hideCounter && <span>{format(item.current)} / {format(item.target)}</span>}
         <span className="shrink-0 text-right">
-          Reward <strong className="text-green-500">{money(reward)}</strong>
+          Reward <strong className="text-green-500">{rewardText ?? money(reward)}</strong>
         </span>
       </div>
     </section>
@@ -178,7 +180,7 @@ export default function RewardsPage() {
         <Card title="Monthly spending" description="Spend ₦50,000 this month across Temp Number, including API orders." item={data.monthly} reward={2000} type="monthly" onClaim={claim} busy={busy} format={money} />
         <Card title="7-day order streak" description="Complete at least one order each day for seven consecutive days." item={data.streak} reward={1000} type="streak" onClaim={claim} busy={busy} />
         <Card title="Rental cashback" description="Earn 1% on completed dashboard number rentals. Claim from ₦1,000." item={data.cashback} reward={data.cashback.current} type="cashback" onClaim={claim} busy={busy} format={money} />
-        <Card title="Top-up bonus" description="Earn 5% whenever a successful wallet top-up is ₦100,000 or more." item={data.topup} reward={data.topup.current} type="topup" onClaim={claim} busy={busy} format={money} />
+        <Card title="Top-up bonus" description="Earn 5% whenever top-up wallet with at least ₦100,000." item={data.topup} reward={data.topup.current} rewardText="5%" hideCounter type="topup" onClaim={claim} busy={busy} format={money} />
         <Card title="Referral milestones" description="Rewards unlock when referred users complete their first order." item={data.referrals} reward={nextReferralReward} type="referrals" onClaim={claim} busy={busy} />
       </div>
       <section className="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] p-5">
