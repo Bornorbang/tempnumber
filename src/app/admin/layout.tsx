@@ -17,7 +17,8 @@ const ADMIN_NAV = [
   { label: "Long-Term Rentals",href: "/admin/long-rentals",      exact: false },
   { label: "Dedicated Numbers",href: "/admin/dedicated",          exact: false },
   { label: "Temporary Emails", href: "/admin/temp-mail",          exact: false },
-  { label: "Referrals",        href: "/admin/referrals",         exact: false },
+  { label: "Rewards",          href: "/admin/rewards",           exact: false },
+  { label: "Boost Account",    href: "/admin/boost-account",     exact: false },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
