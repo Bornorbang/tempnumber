@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 
 type LedgerRow = {
   type: "credit" | "debit";
-  source: "topup" | "adjustment" | "rental" | "long_rental" | "dedicated";
+  source: "topup" | "reward" | "adjustment" | "rental" | "long_rental" | "dedicated";
   amount: number;
   service: string;
   user_name: string;

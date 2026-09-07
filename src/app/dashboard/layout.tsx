@@ -11,10 +11,15 @@ import MiniFooter from "@/components/MiniFooter";
 const AVATAR_URL =
   "https://img.magnific.com/premium-vector/male-face-avatar-icon-set-flat-design-social-media-profiles_1281173-3806.jpg?semt=ais_hybrid&w=740&q=80";
 
-type DashboardNavItem = { label: string; href: string; exact: boolean };
+type DashboardNavItem = {
+  label: string;
+  href: string;
+  exact: boolean;
+  badge?: string;
+};
 
-// Standard sidebar (non-global pages): USA Numbers → All Countries → Long-term → Dedicated → Wallet → Refer a Friend
-const STANDARD_SIDEBAR = [
+// Standard sidebar for USA and product pages.
+const STANDARD_SIDEBAR: DashboardNavItem[] = [
   { label: "USA Numbers",       href: "/dashboard/usa",          exact: true  },
   { label: "All Countries",     href: "/dashboard/global",       exact: false },
   { label: "Long-term Numbers", href: "/dashboard/long-term",    exact: false },
@@ -22,18 +27,18 @@ const STANDARD_SIDEBAR = [
   { label: "Wallet",            href: "/dashboard/wallet",       exact: false },
   { label: "Temporary Emails",  href: "/dashboard/temp-mail",    exact: false },
   { label: "Boost account",     href: "/boost-account",          exact: false },
-  { label: "Refer a Friend",    href: "/dashboard/referral",     exact: false, badge: "Earn ₦200" },
+  { label: "Rewards",           href: "/dashboard/rewards",      exact: false },
   { label: "API",               href: "/dashboard/api",          exact: false },
 ];
 
-// Global page sidebar: All Countries → USA Numbers → Wallet → Refer a Friend
-const GLOBAL_SIDEBAR = [
+// Global page sidebar starts with the global catalogue.
+const GLOBAL_SIDEBAR: DashboardNavItem[] = [
   { label: "All Countries", href: "/dashboard/global", exact: false },
   { label: "USA Numbers",   href: "/dashboard/usa",    exact: true  },
   { label: "Wallet",        href: "/dashboard/wallet",  exact: false },
   { label: "Temporary Emails", href: "/dashboard/temp-mail", exact: false },
   { label: "Boost account", href: "/boost-account", exact: false },
-  { label: "Refer a Friend", href: "/dashboard/referral", exact: false, badge: "Earn ₦200" },
+  { label: "Rewards", href: "/dashboard/rewards", exact: false },
   { label: "API", href: "/dashboard/api", exact: false },
 ];
 
@@ -150,7 +155,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       "/dashboard/dedicated":      "Dedicated Numbers",
       "/dashboard/announcements": "Announcements",
       "/dashboard/profile":       "Profile",
-      "/dashboard/referral":      "Refer a Friend",
+      "/dashboard/rewards":       "Rewards",
       "/dashboard/temp-mail":     "Temporary Emails",
       "/dashboard/support":       "Support Centre",
       "/boost-account/new-order": "Boost Account - New Order",
