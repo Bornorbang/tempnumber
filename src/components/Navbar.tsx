@@ -12,7 +12,7 @@ const NAV_LINKS = [
   { label: "Long-term Rentals", href: "/long-term-rentals" },
   { label: "Dedicated Numbers", href: "/dedicated-numbers" },
   { label: "Temporary Email",  href: "/temporary-email" },
-  { label: "Resellers",         href: "/reseller" },
+  { label: "API",               href: "/developers" },
 ];
 
 export default function Navbar() {

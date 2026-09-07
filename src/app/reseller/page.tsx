@@ -5,23 +5,6 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-// ── Types & helpers ───────────────────────────────────────────────────────────
-
-type Service = {
-  service_name: string;
-  api_name: string;
-  price: string; // USD
-  ttl: number;
-  stock: number;
-  multiple_sms: string;
-};
-
-const NGN_RATE = 1600;
-
-function usdToResellerNgn(usd: string | number) {
-  return Math.ceil(Number(usd) * NGN_RATE) + 200; // ₦200 margin — cheaper than retail (₦500)
-}
-
 // ── Pricing plans ─────────────────────────────────────────────────────────────
 
 const PLANS = [
@@ -167,7 +150,7 @@ const WHY_FEATURES = [
   },
   {
     title: "100+ Services",
-    desc: "Tap into our global number inventory across 100+ SMS verification services, all managed through a single API.",
+    desc: "Access USA numbers across 100+ SMS verification services through our API.",
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -203,29 +186,6 @@ const WHY_FEATURES = [
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function ResellerPage() {
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/prices")
-      .then((r) => r.json())
-      .then((data) => {
-        const arr: Service[] = Array.isArray(data) ? data : [data];
-        setServices(arr.filter((s) => s && s.service_name));
-        setLoading(false);
-      })
-      .catch(() => {
-        setError(true);
-        setLoading(false);
-      });
-  }, []);
-
-  const filtered = services.filter((s) =>
-    s.service_name.toLowerCase().includes(search.toLowerCase())
-  );
-
   return (
     <>
       <Navbar />
@@ -245,10 +205,11 @@ export default function ResellerPage() {
               Business
             </h1>
             <p className="text-[var(--text-secondary)] text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
-              We build a fully branded, production-ready SMS verification platform for you — powered by our trusted
-              infrastructure. You set your prices, keep your profits, and grow your business.
+              Connect your platform to our USA Reseller API, or let us build your branded SMS verification platform.
+              You set your retail prices and manage your customers while we supply USA numbers and SMS codes.
             </p>
-            <div className="flex justify-center">
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Link href="/developers" className="border border-green-500 text-green-500 font-semibold px-8 py-3.5 rounded-xl text-sm hover:bg-green-500/10">API Documentation</Link>
               <a
                 href="#plans"
                 className="bg-green-500 hover:bg-green-400 text-white font-semibold px-8 py-3.5 rounded-xl transition-colors text-sm"
@@ -298,122 +259,6 @@ export default function ResellerPage() {
                 </div>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* ── Live Service Prices ── */}
-        <section className="py-16 px-4 bg-[var(--bg-section-alt)]">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-3">
-                Reseller Wholesale Prices
-              </h2>
-              <p className="text-[var(--text-secondary)] text-sm max-w-2xl mx-auto">
-                The prices below are what your platform will source numbers at — you set your own retail price on top and keep the difference.
-              </p>
-            </div>
-
-            {/* Search */}
-            <div className="relative max-w-sm mx-auto mb-6">
-              <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input
-                type="text"
-                placeholder="Search services…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl pl-10 pr-4 py-2.5 placeholder-gray-400 focus:outline-none focus:border-green-500 transition-colors"
-              />
-            </div>
-
-            <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl overflow-hidden">
-              <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
-                <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-[var(--bg-card)] z-10">
-                    <tr className="border-b border-[var(--border-color)]">
-                      <th className="text-left text-gray-500 font-medium text-xs px-4 py-2.5">Service</th>
-                      <th className="text-right text-gray-500 font-medium text-xs px-3 py-2.5">Duration</th>
-                      <th className="text-right text-gray-500 font-medium text-xs px-3 py-2.5">Stock</th>
-                      <th className="text-right text-gray-500 font-medium text-xs px-4 py-2.5">Your Cost (NGN)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[var(--border-color)]">
-                    {loading ? (
-                      Array.from({ length: 10 }).map((_, i) => (
-                        <tr key={i} className="border-b border-[var(--border-color)]">
-                          <td className="px-4 py-2">
-                            <div className="h-3 w-24 bg-gray-200 dark:bg-white/10 rounded animate-pulse" />
-                          </td>
-                          {[1, 2, 3].map((j) => (
-                            <td key={j} className="px-3 py-2 text-right">
-                              <div className="h-3 w-10 bg-gray-200 dark:bg-white/10 rounded animate-pulse ml-auto" />
-                            </td>
-                          ))}
-                        </tr>
-                      ))
-                    ) : error ? (
-                      <tr>
-                        <td colSpan={4} className="text-center py-12 text-red-400 text-sm">
-                          Could not load live prices. Please refresh.
-                        </td>
-                      </tr>
-                    ) : filtered.length === 0 ? (
-                      <tr>
-                        <td colSpan={4} className="text-center py-12 text-gray-500 text-sm">
-                          No services found.
-                        </td>
-                      </tr>
-                    ) : (
-                      filtered.map((s) => {
-                        const resellerPrice = usdToResellerNgn(s.price);
-                        return (
-                          <tr key={s.api_name} className="hover:bg-[var(--bg-card-inner)] transition-colors">
-                            <td className="px-4 py-2">
-                              <p className="text-slate-900 dark:text-white font-medium text-xs">{s.service_name}</p>
-                              {s.multiple_sms === "true" && (
-                                <p className="text-[10px] text-gray-400">Multi-SMS</p>
-                              )}
-                            </td>
-                            <td className="px-3 py-2 text-right text-slate-700 dark:text-gray-400 text-xs">{s.ttl}m</td>
-                            <td className="px-3 py-2 text-right">
-                              <span className={`text-xs font-medium ${
-                                s.stock > 50 ? "text-green-500" :
-                                s.stock > 5  ? "text-yellow-500" :
-                                s.stock > 0  ? "text-orange-400" :
-                                               "text-red-400"
-                              }`}>
-                                {s.stock > 0 ? `${s.stock}` : "0"}
-                              </span>
-                            </td>
-                            <td className="px-4 py-2 text-right">
-                              <span className="text-green-500 font-bold text-xs">
-                                ₦{resellerPrice.toLocaleString()}
-                              </span>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              {!loading && !error && (
-                <div className="px-5 py-3 border-t border-[var(--border-color)] flex items-center justify-between">
-                  <p className="text-gray-500 text-xs">
-                    Showing {filtered.length} of {services.length} services · Prices update live
-                  </p>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse" />
-                    <span className="text-gray-500 text-xs">Live</span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <p className="text-center text-gray-400 text-xs mt-4">
-              Prices shown are your wholesale cost. Set your retail price above this and earn the margin on every rental.
-            </p>
           </div>
         </section>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 import { rentalsApi, ApiError, type StoredRental } from "@/lib/api";
@@ -307,6 +307,8 @@ export default function USADashboardPage() {
   useEffect(() => {
     try {
       const stored = localStorage.getItem("tn_favorites");
+      // Initializing client-only persisted preferences is the purpose of this effect.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (stored) setFavorites(new Set(JSON.parse(stored)));
     } catch { /* ignore */ }
   }, []);
@@ -367,7 +369,7 @@ export default function USADashboardPage() {
 
   // Load recent rentals — USA dashboard ONLY shows getatext (source='getatext') rentals.
   // Active ones show while waiting; received (with code) ones persist; expired/cancelled excluded.
-  const loadRecentRentals = async () => {
+  const loadRecentRentals = useCallback(async () => {
     try {
       const data = await rentalsApi.list();
       const visible = data
@@ -382,9 +384,44 @@ export default function USADashboardPage() {
         .slice(0, 10);
       setRecentRentals(visible);
     } catch { /* ignore */ }
-  };
+  }, []);
 
-  useEffect(() => { loadRecentRentals(); }, []);
+  useEffect(() => {
+    // Loading remote rentals is the purpose of this mount effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void loadRecentRentals();
+  }, [loadRecentRentals]);
+
+  // API orders can be created outside this browser. Keep the visible dashboard
+  // synchronized without making background requests from hidden tabs.
+  useEffect(() => {
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout>;
+
+    async function syncDashboard() {
+      if (document.visibilityState !== "visible") return;
+      await Promise.allSettled([loadRecentRentals(), refreshUser()]);
+    }
+
+    function schedule() {
+      timer = setTimeout(async () => {
+        await syncDashboard();
+        if (!stopped) schedule();
+      }, 5000);
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") void syncDashboard();
+    }
+
+    schedule();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [loadRecentRentals, refreshUser]);
 
   // Auto-rent when arriving from homepage "Rent" button (?rent=ServiceName)
   useEffect(() => {
@@ -409,6 +446,8 @@ export default function USADashboardPage() {
       sessionStorage.removeItem("tn_topup_amount");
       const amount = parseFloat(amountStr);
       refreshUser();
+      // Showing a one-time payment callback notification is the purpose of this effect.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       addToast(
         "success",
         "Wallet topped up!",

@@ -9,6 +9,7 @@ const LINKS = {
     { label: "Dedicated Numbers",  href: "/dedicated-numbers" },
     { label: "Temporary Email",    href: "/temporary-email" },
     { label: "Resellers",          href: "/reseller" },
+    { label: "USA API Docs",       href: "/developers" },
   ],
   "Other Services": [
     { label: "Domain Registration", href: "https://portal.hostingnigeria.com/domainchecker.php" },
@@ -102,17 +103,15 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="pt-6 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-slate-400 dark:text-gray-500 text-xs">
-            © {new Date().getFullYear()} Temp Number by{" "}
-            <a
-              href="https://hostingnigeria.com"
-              target="_blank"
-              rel="noopener noreferrer"
+        <div className="pt-6 border-t border-slate-200 dark:border-white/10 flex flex-col items-center justify-center gap-3">
+          <p className="text-slate-400 dark:text-gray-500 text-xs text-center">
+            © 2026 {" "}
+            <Link
+              href="/"
               className="text-green-500 dark:text-green-400 hover:underline font-medium"
             >
-              Hosting Nigeria
-            </a>
+              Temp Number
+            </Link>
             . All rights reserved.
           </p>
         </div>

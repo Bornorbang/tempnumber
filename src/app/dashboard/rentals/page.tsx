@@ -370,6 +370,35 @@ function RentalsPageInner() {
     void loadRentals();
   }, [loadRentals]);
 
+  useEffect(() => {
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout>;
+
+    async function syncRentals() {
+      if (document.visibilityState !== "visible") return;
+      await Promise.allSettled([loadRentals(), refreshUser()]);
+    }
+
+    function schedule() {
+      timer = setTimeout(async () => {
+        await syncRentals();
+        if (!stopped) schedule();
+      }, 5000);
+    }
+
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") void syncRentals();
+    }
+
+    schedule();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [loadRentals, refreshUser]);
+
   function switchTab(tab: "usa" | "global") {
     setActiveTab(tab);
     setPage(1);

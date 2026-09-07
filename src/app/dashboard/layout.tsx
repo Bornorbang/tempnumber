@@ -11,15 +11,7 @@ import MiniFooter from "@/components/MiniFooter";
 const AVATAR_URL =
   "https://img.magnific.com/premium-vector/male-face-avatar-icon-set-flat-design-social-media-profiles_1281173-3806.jpg?semt=ais_hybrid&w=740&q=80";
 
-const NAV = [
-  { label: "USA Numbers",      href: "/dashboard/usa",           exact: true  },
-  { label: "All Countries",    href: "/dashboard/global",        exact: false },
-  { label: "Long-term Numbers",href: "/dashboard/long-term",     exact: false },
-  { label: "Dedicated Numbers",href: "/dashboard/dedicated",     exact: false },
-  { label: "Wallet",           href: "/dashboard/wallet",        exact: false },
-  { label: "Announcements",    href: "/dashboard/announcements", exact: false },
-  { label: "API",              href: "/dashboard/api",           exact: false },
-];
+type DashboardNavItem = { label: string; href: string; exact: boolean };
 
 // Standard sidebar (non-global pages): USA Numbers → All Countries → Long-term → Dedicated → Wallet → Refer a Friend
 const STANDARD_SIDEBAR = [
@@ -29,8 +21,9 @@ const STANDARD_SIDEBAR = [
   { label: "Dedicated Numbers", href: "/dashboard/dedicated",    exact: false },
   { label: "Wallet",            href: "/dashboard/wallet",       exact: false },
   { label: "Temporary Emails",  href: "/dashboard/temp-mail",    exact: false },
+  { label: "Boost account",     href: "/boost-account",          exact: false },
   { label: "Refer a Friend",    href: "/dashboard/referral",     exact: false, badge: "Earn ₦200" },
-  { label: "Reseller",          href: "/reseller",               exact: false },
+  { label: "API",               href: "/dashboard/api",          exact: false },
 ];
 
 // Global page sidebar: All Countries → USA Numbers → Wallet → Refer a Friend
@@ -39,8 +32,9 @@ const GLOBAL_SIDEBAR = [
   { label: "USA Numbers",   href: "/dashboard/usa",    exact: true  },
   { label: "Wallet",        href: "/dashboard/wallet",  exact: false },
   { label: "Temporary Emails", href: "/dashboard/temp-mail", exact: false },
+  { label: "Boost account", href: "/boost-account", exact: false },
   { label: "Refer a Friend", href: "/dashboard/referral", exact: false, badge: "Earn ₦200" },
-  { label: "Reseller", href: "/reseller", exact: false },
+  { label: "API", href: "/dashboard/api", exact: false },
 ];
 
 const BOTTOM_NAV = [
@@ -110,10 +104,34 @@ const NAV_ICONS: Record<string, (active: boolean) => React.ReactNode> = {
   ),
 };
 
+function ThemeToggle() {
+  const { theme, setTheme } = useTheme();
+    return (
+      <button
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        aria-label="Toggle theme"
+        suppressHydrationWarning
+        className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
+      >
+        <span suppressHydrationWarning>
+          {theme === "dark" ? (
+            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+            </svg>
+          ) : (
+            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          )}
+        </span>
+      </button>
+    );
+  }
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router   = useRouter();
-  const { theme, setTheme } = useTheme();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const { user, loading, logout } = useAuth();
@@ -135,6 +153,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       "/dashboard/referral":      "Refer a Friend",
       "/dashboard/temp-mail":     "Temporary Emails",
       "/dashboard/support":       "Support Centre",
+      "/boost-account/new-order": "Boost Account - New Order",
+      "/boost-account/orders":   "Boost Account - Orders",
     };
     const title = PAGE_TITLES[pathname] ?? "Dashboard";
     document.title = `${title} - Temp Number`;
@@ -153,31 +173,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (!loading && !user) router.push("/auth/signin");
   }, [loading, user, router]);
 
-  function isActive(item: (typeof NAV)[0]) {
+  function isActive(item: DashboardNavItem) {
     return item.exact ? pathname === item.href : pathname.startsWith(item.href);
-  }
-
-  function ThemeToggle() {
-    return (
-      <button
-        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        aria-label="Toggle theme"
-        suppressHydrationWarning
-        className="w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
-      >
-        <span suppressHydrationWarning>
-          {theme === "dark" ? (
-            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-            </svg>
-          ) : (
-            <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-          )}
-        </span>
-      </button>
-    );
   }
 
   // Show spinner while checking auth
@@ -219,7 +216,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all ${
                   active
                     ? "bg-green-500/10 text-green-500 border border-green-500/20"
                     : "text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)]"
@@ -239,7 +236,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="my-2 border-t border-[var(--border-color)]" />
               <Link
                 href="/admin"
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-medium transition-all ${
                   pathname.startsWith("/admin")
                     ? "bg-green-500/10 text-green-500 border border-green-500/20"
                     : "text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)]"
@@ -260,13 +257,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             href="https://whatsapp.com/channel/0029Vb7uTgC30LKUfBRj3p2L"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center px-4 py-2.5 rounded-xl text-sm font-medium text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)] transition-all"
+            className="flex items-center px-4 py-2.5 rounded-xl text-[13px] font-medium text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)] transition-all"
           >
             Join Channel
           </a>
           <Link
             href="/dashboard/support"
-            className="flex items-center px-4 py-2.5 rounded-xl text-sm font-medium text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)] transition-all"
+            className="flex items-center px-4 py-2.5 rounded-xl text-[13px] font-medium text-slate-900 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-[var(--bg-card-inner)] transition-all"
           >
             Contact Support
           </Link>
@@ -418,7 +415,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                  className={`flex items-center justify-between px-4 py-3 rounded-xl text-[13px] font-medium transition-all ${
                     active
                       ? "bg-green-500/10 text-green-500 border border-green-500/20"
                       : "text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)]"
@@ -446,7 +443,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Link
                   href="/admin"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                  className={`flex items-center px-4 py-3 rounded-xl text-[13px] font-medium transition-all ${
                     pathname.startsWith("/admin")
                       ? "bg-green-500/10 text-green-500 border border-green-500/20"
                       : "text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)]"
@@ -462,14 +459,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
+                className="flex items-center px-4 py-3 rounded-xl text-[13px] font-medium text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
               >
                 Join Channel
               </a>
               <Link
                 href="/dashboard/support"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
+                className="flex items-center px-4 py-3 rounded-xl text-[13px] font-medium text-gray-400 hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-inner)] transition-all"
               >
                 Contact Support
               </Link>

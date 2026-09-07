@@ -79,7 +79,7 @@ function ResetPasswordForm() {
         </div>
 
         <p className="text-white/40 text-xs relative">
-          © {new Date().getFullYear()} Temp Number
+          © {new Date().getFullYear()} <Link href="/" className="hover:underline">Temp Number</Link>
         </p>
       </div>
 

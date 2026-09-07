@@ -13,9 +13,10 @@ export async function GET(req: NextRequest) {
   try {
     const res = await fetch(`${PHP}/developer/keys.php`, {
       headers: forwardHeaders(req),
+      cache: "no-store",
     });
     const data = await res.json();
-    return NextResponse.json(data, { status: res.status });
+    return NextResponse.json(data, { status: res.status, headers: { "Cache-Control": "no-store" } });
   } catch {
     return NextResponse.json({ error: "Upstream error" }, { status: 502 });
   }
@@ -28,9 +29,10 @@ export async function POST(req: NextRequest) {
       method: "POST",
       headers: forwardHeaders(req),
       body,
+      cache: "no-store",
     });
     const data = await res.json();
-    return NextResponse.json(data, { status: res.status });
+    return NextResponse.json(data, { status: res.status, headers: { "Cache-Control": "no-store" } });
   } catch {
     return NextResponse.json({ error: "Upstream error" }, { status: 502 });
   }

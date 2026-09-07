@@ -39,7 +39,7 @@ const FAQS = [
   },
   {
     q: "Do you offer API access for developers?",
-    a: "Our Developer API is coming soon! In the meantime, businesses and developers who need bulk access can explore our Reseller Plans with discounted rates and dedicated support.",
+    a: "Yes. Our USA Reseller API lets your platform order USA short-term numbers, check SMS codes, cancel rentals and view wallet balance. Generate an API key in your dashboard and read the documentation at /developers. Global numbers are not available through this API.",
   },
   {
     q: "How do I contact support?",

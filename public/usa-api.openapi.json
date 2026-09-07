@@ -1,0 +1,868 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Temp Number USA Reseller API",
+    "version": "1.0.0",
+    "description": "USA short-term numbers only. Server-to-server authentication. NGN wallet billing. 60 requests/minute/account, 10 active or pending USA orders. On timeout or order_pending, retry the SAME Idempotency-Key and body; never place a replacement order. Contact support with request_id if confirmation remains pending. No global, dedicated, long-term or email products. Polling only; customer webhooks are not provided.",
+    "contact": {
+      "email": "support@tempnumber.ng"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://tempnumber.ng/api/v1"
+    },
+    {
+      "url": "http://localhost:3002/api/v1",
+      "description": "Local development"
+    }
+  ],
+  "security": [
+    {
+      "ApiKey": []
+    }
+  ],
+  "paths": {
+    "/balance": {
+      "get": {
+        "operationId": "balance",
+        "summary": "Wallet balance",
+        "description": "Available funds in your Temp Number wallet. Reservations for pending orders are already deducted. Top up in the dashboard before purchasing.",
+        "responses": {
+          "200": {
+            "description": "Success. Purchase replays return the original response and balance snapshot.",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "balance_ngn",
+                    "currency"
+                  ],
+                  "properties": {
+                    "balance_ngn": {
+                      "type": "number"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "enum": [
+                        "NGN"
+                      ]
+                    }
+                  }
+                },
+                "example": {
+                  "balance_ngn": 15000,
+                  "currency": "NGN"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "default": {
+            "$ref": "#/components/responses/ApiError"
+          }
+        }
+      }
+    },
+    "/prices": {
+      "get": {
+        "operationId": "prices",
+        "summary": "USA services and live prices",
+        "description": "Use api_name as the service when ordering. price_ngn is your purchase price in Naira; stock can change before you order. ttl is the rental duration in minutes. Only USA short-term services are returned.",
+        "responses": {
+          "200": {
+            "description": "Success. Purchase replays return the original response and balance snapshot.",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "api_name",
+                      "service_name",
+                      "country",
+                      "currency",
+                      "price_ngn",
+                      "stock",
+                      "ttl",
+                      "multiple_sms"
+                    ],
+                    "properties": {
+                      "api_name": {
+                        "type": "string"
+                      },
+                      "service_name": {
+                        "type": "string"
+                      },
+                      "country": {
+                        "type": "string",
+                        "enum": [
+                          "USA"
+                        ]
+                      },
+                      "currency": {
+                        "type": "string",
+                        "enum": [
+                          "NGN"
+                        ]
+                      },
+                      "price_ngn": {
+                        "type": "number"
+                      },
+                      "stock": {
+                        "type": "integer"
+                      },
+                      "ttl": {
+                        "type": "integer"
+                      },
+                      "multiple_sms": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "api_name": "whatsapp",
+                    "service_name": "WhatsApp",
+                    "country": "USA",
+                    "currency": "NGN",
+                    "price_ngn": 2000,
+                    "stock": 12,
+                    "ttl": 20,
+                    "multiple_sms": false
+                  }
+                ]
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "default": {
+            "$ref": "#/components/responses/ApiError"
+          }
+        }
+      }
+    },
+    "/rent": {
+      "post": {
+        "operationId": "rent",
+        "summary": "Order a USA number",
+        "description": "Requires Idempotency-Key. service is required; max_price_ngn is an optional spending cap in NGN. The server checks current stock and pricing, reserves your funds, then provisions the number. Other fields, including country, provider and USD max_price, are rejected. Returns HTTP 201 on success.",
+        "responses": {
+          "201": {
+            "description": "Success. Purchase replays return the original response and balance snapshot.",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "number",
+                    "service_name",
+                    "country",
+                    "price_ngn",
+                    "currency",
+                    "status",
+                    "code",
+                    "end_time",
+                    "new_balance",
+                    "request_id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "number": {
+                      "type": "string"
+                    },
+                    "service_name": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string",
+                      "enum": [
+                        "USA"
+                      ]
+                    },
+                    "price_ngn": {
+                      "type": "number"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "enum": [
+                        "NGN"
+                      ]
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "end_time": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "new_balance": {
+                      "type": "number"
+                    },
+                    "request_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "id": 12345,
+                  "number": "+12025550123",
+                  "service_name": "WhatsApp",
+                  "country": "USA",
+                  "price_ngn": 2000,
+                  "currency": "NGN",
+                  "status": "active",
+                  "code": null,
+                  "end_time": "2026-09-06T12:20:00Z",
+                  "new_balance": 13000,
+                  "request_id": "81"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "default": {
+            "$ref": "#/components/responses/ApiError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.:-]{8,128}$"
+            },
+            "description": "Save one key per order; always reuse the key and body on retries."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "service"
+                ],
+                "properties": {
+                  "service": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "max_price_ngn": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMinimum": true,
+                    "maximum": 99999999
+                  }
+                },
+                "additionalProperties": false
+              },
+              "example": {
+                "service": "whatsapp",
+                "max_price_ngn": 2000
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status": {
+      "post": {
+        "operationId": "status",
+        "summary": "Receive the SMS code",
+        "description": "Use the id returned by /rent or /rentals. Poll every 10 seconds, slowing down when you have several active rentals. Stop at completed, cancelled or expired. Codes are strings, preserving leading zeros. A provider outage returns 502; it does not imply expiry or a refund.",
+        "responses": {
+          "200": {
+            "description": "Success. Purchase replays return the original response and balance snapshot.",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "number",
+                    "service_name",
+                    "country",
+                    "status",
+                    "code",
+                    "end_time",
+                    "price_ngn",
+                    "currency",
+                    "rented_at",
+                    "refunded",
+                    "refund_ngn",
+                    "new_balance"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "number": {
+                      "type": "string"
+                    },
+                    "service_name": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string",
+                      "enum": [
+                        "USA"
+                      ]
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "end_time": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "price_ngn": {
+                      "type": "number"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "enum": [
+                        "NGN"
+                      ]
+                    },
+                    "rented_at": {
+                      "type": "string"
+                    },
+                    "refunded": {
+                      "type": "boolean"
+                    },
+                    "refund_ngn": {
+                      "type": "number"
+                    },
+                    "new_balance": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "example": {
+                  "id": 12345,
+                  "number": "+12025550123",
+                  "service_name": "WhatsApp",
+                  "country": "USA",
+                  "status": "completed",
+                  "code": "012345",
+                  "end_time": "2026-09-06T12:20:00Z",
+                  "price_ngn": 2000,
+                  "currency": "NGN",
+                  "rented_at": "2026-09-06 12:00:00",
+                  "refunded": false,
+                  "refund_ngn": 0,
+                  "new_balance": 13000
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "default": {
+            "$ref": "#/components/responses/ApiError"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "additionalProperties": false
+              },
+              "example": {
+                "id": 12345
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cancel": {
+      "post": {
+        "operationId": "cancel",
+        "summary": "Cancel and check the outcome",
+        "description": "Requests cancellation from the provider. Only a confirmed cancellation or expiry without an SMS credits the wallet. The response can remain active if cancellation is not yet confirmed, or become completed if an SMS arrived. Repeating a terminal cancellation does not refund again. refunded describes a credit made by this request, not the rental's entire refund history.",
+        "responses": {
+          "200": {
+            "description": "Success. Purchase replays return the original response and balance snapshot.",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "number",
+                    "service_name",
+                    "country",
+                    "status",
+                    "code",
+                    "end_time",
+                    "price_ngn",
+                    "currency",
+                    "rented_at",
+                    "refunded",
+                    "refund_ngn",
+                    "new_balance"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "number": {
+                      "type": "string"
+                    },
+                    "service_name": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string",
+                      "enum": [
+                        "USA"
+                      ]
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "code": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "end_time": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "price_ngn": {
+                      "type": "number"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "enum": [
+                        "NGN"
+                      ]
+                    },
+                    "rented_at": {
+                      "type": "string"
+                    },
+                    "refunded": {
+                      "type": "boolean"
+                    },
+                    "refund_ngn": {
+                      "type": "number"
+                    },
+                    "new_balance": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "example": {
+                  "id": 12345,
+                  "number": "+12025550123",
+                  "service_name": "WhatsApp",
+                  "country": "USA",
+                  "status": "cancelled",
+                  "code": null,
+                  "end_time": "2026-09-06T12:20:00Z",
+                  "price_ngn": 2000,
+                  "currency": "NGN",
+                  "rented_at": "2026-09-06 12:00:00",
+                  "refunded": true,
+                  "refund_ngn": 2000,
+                  "new_balance": 15000
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "default": {
+            "$ref": "#/components/responses/ApiError"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "id"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "additionalProperties": false
+              },
+              "example": {
+                "id": 12345
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rentals": {
+      "get": {
+        "operationId": "rentals",
+        "summary": "USA rental history",
+        "description": "Returns your USA short-term rentals, including dashboard purchases, newest first. Global, dedicated and long-term numbers are excluded. Optional query parameters: limit (1–100, default 50) and before (the previous next_cursor). Continue until next_cursor is null. The cursor is a pagination token; use each rental's id for status and cancellation.",
+        "responses": {
+          "200": {
+            "description": "Success. Purchase replays return the original response and balance snapshot.",
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data",
+                    "next_cursor"
+                  ],
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "number",
+                          "service_name",
+                          "country",
+                          "status",
+                          "code",
+                          "end_time",
+                          "price_ngn",
+                          "currency",
+                          "rented_at"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "number": {
+                            "type": "string"
+                          },
+                          "service_name": {
+                            "type": "string"
+                          },
+                          "country": {
+                            "type": "string",
+                            "enum": [
+                              "USA"
+                            ]
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "end_time": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "price_ngn": {
+                            "type": "number"
+                          },
+                          "currency": {
+                            "type": "string",
+                            "enum": [
+                              "NGN"
+                            ]
+                          },
+                          "rented_at": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "next_cursor": {
+                      "type": "integer",
+                      "nullable": true
+                    }
+                  }
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": 12345,
+                      "number": "+12025550123",
+                      "service_name": "WhatsApp",
+                      "country": "USA",
+                      "status": "completed",
+                      "code": "012345",
+                      "end_time": "2026-09-06T12:20:00Z",
+                      "price_ngn": 2000,
+                      "currency": "NGN",
+                      "rented_at": "2026-09-06 12:00:00"
+                    }
+                  ],
+                  "next_cursor": null
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/RateLimited"
+          },
+          "default": {
+            "$ref": "#/components/responses/ApiError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "The previous page's next_cursor.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    },
+    "responses": {
+      "ApiError": {
+        "description": "Use HTTP status and code. Order retries must reuse the same key and body. See /developers for all error codes.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "error",
+                "code"
+              ],
+              "properties": {
+                "error": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "request_id": {
+                  "type": "string"
+                },
+                "reserved_ngn": {
+                  "type": "number"
+                },
+                "price_ngn": {
+                  "type": "number"
+                },
+                "retry_after": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "RateLimited": {
+        "description": "Account rate limit exceeded. Wait Retry-After seconds.",
+        "headers": {
+          "Retry-After": {
+            "schema": {
+              "type": "integer"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "error",
+                "code"
+              ],
+              "properties": {
+                "error": {
+                  "type": "string"
+                },
+                "code": {
+                  "type": "string"
+                },
+                "request_id": {
+                  "type": "string"
+                },
+                "reserved_ngn": {
+                  "type": "number"
+                },
+                "price_ngn": {
+                  "type": "number"
+                },
+                "retry_after": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
