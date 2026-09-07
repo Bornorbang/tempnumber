@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 
 type LedgerRow = {
   type: "credit" | "debit";
+  source: "topup" | "adjustment" | "rental" | "long_rental" | "dedicated";
   amount: number;
   service: string;
   user_name: string;
@@ -30,15 +31,17 @@ export default function AdminWalletHistoryPage() {
   const [loading, setLoading]           = useState(true);
   const [search, setSearch]             = useState("");
   const [typeFilter, setTypeFilter]     = useState<"" | "credit" | "debit">("");
+  const [sourceFilter, setSourceFilter] = useState<"" | "topup" | "adjustment">("");
   const [dateFrom, setDateFrom]         = useState("");
   const [dateTo, setDateTo]             = useState("");
   const [page, setPage]                 = useState(0);
 
-  const load = useCallback((q = "", t = "", from = "", to = "", p = 0) => {
+  const load = useCallback((q = "", t = "", source = "", from = "", to = "", p = 0) => {
     setLoading(true);
     const qs = new URLSearchParams({
       search: q,
       type: t,
+      source,
       date_from: from,
       date_to: to,
       limit: String(PAGE_SIZE),
@@ -65,12 +68,13 @@ export default function AdminWalletHistoryPage() {
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
-  function handleSearch(val: string) { setSearch(val); setPage(0); load(val, typeFilter, dateFrom, dateTo, 0); }
-  function handleType(val: "" | "credit" | "debit") { setTypeFilter(val); setPage(0); load(search, val, dateFrom, dateTo, 0); }
-  function handleDateFrom(val: string) { setDateFrom(val); setPage(0); load(search, typeFilter, val, dateTo, 0); }
-  function handleDateTo(val: string) { setDateTo(val); setPage(0); load(search, typeFilter, dateFrom, val, 0); }
-  function clearDates() { setDateFrom(""); setDateTo(""); setPage(0); load(search, typeFilter, "", "", 0); }
-  function goToPage(p: number) { setPage(p); load(search, typeFilter, dateFrom, dateTo, p); }
+  function handleSearch(val: string) { setSearch(val); setPage(0); load(val, typeFilter, sourceFilter, dateFrom, dateTo, 0); }
+  function handleType(val: "" | "credit" | "debit") { setTypeFilter(val); setPage(0); load(search, val, sourceFilter, dateFrom, dateTo, 0); }
+  function handleSource(val: "" | "topup" | "adjustment") { setSourceFilter(val); setPage(0); load(search, typeFilter, val, dateFrom, dateTo, 0); }
+  function handleDateFrom(val: string) { setDateFrom(val); setPage(0); load(search, typeFilter, sourceFilter, val, dateTo, 0); }
+  function handleDateTo(val: string) { setDateTo(val); setPage(0); load(search, typeFilter, sourceFilter, dateFrom, val, 0); }
+  function clearDates() { setDateFrom(""); setDateTo(""); setPage(0); load(search, typeFilter, sourceFilter, "", "", 0); }
+  function goToPage(p: number) { setPage(p); load(search, typeFilter, sourceFilter, dateFrom, dateTo, p); }
 
   return (
     <div className="space-y-6 max-w-6xl">
@@ -103,6 +107,11 @@ export default function AdminWalletHistoryPage() {
               </button>
             ))}
           </div>
+          <select value={sourceFilter} onChange={(e) => handleSource(e.target.value as "" | "topup" | "adjustment")} className="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-green-500">
+            <option value="">All sources</option>
+            <option value="topup">Wallet top-ups</option>
+            <option value="adjustment">Admin adjustments</option>
+          </select>
           {/* Search */}
           <input
             type="text"

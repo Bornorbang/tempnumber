@@ -18,10 +18,22 @@ function formatDate(iso: string) {
 
 const PAGE_SIZE = 100;
 
+function paginationItems(page: number, totalPages: number): Array<number | string> {
+  const pages = new Set([1, totalPages, page - 1, page, page + 1].filter((value) => value >= 1 && value <= totalPages));
+  const sorted = [...pages].sort((a, b) => a - b);
+  const items: Array<number | string> = [];
+  sorted.forEach((value, index) => {
+    if (index > 0 && value - sorted[index - 1] > 1) items.push(`ellipsis-${value}`);
+    items.push(value);
+  });
+  return items;
+}
+
 export default function AdminUsersPage() {
   const [users, setUsers]     = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch]   = useState("");
+  const [role, setRole]       = useState<"" | "admin" | "user">("");
   const [page, setPage]       = useState(1);
   const [modal, setModal]     = useState<Modal>(null);
   const [busy, setBusy]       = useState(false);
@@ -38,17 +50,20 @@ export default function AdminUsersPage() {
 
   function getToken() { return localStorage.getItem("tn_token") ?? ""; }
 
-  const load = useCallback((q = "") => {
+  const load = useCallback((q = "", selectedRole = "") => {
     setLoading(true);
-    const qs = q ? `?search=${encodeURIComponent(q)}` : "";
-    fetch(`/api/admin/users${qs}`, { headers: { Authorization: `Bearer ${getToken()}` } })
+    const qs = new URLSearchParams({ search: q, role: selectedRole }).toString();
+    fetch(`/api/admin/users?${qs}`, { headers: { Authorization: `Bearer ${getToken()}` } })
       .then((r) => r.json())
       .then((data) => setUsers(Array.isArray(data) ? data : []))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const timer = setTimeout(() => load(), 0);
+    return () => clearTimeout(timer);
+  }, [load]);
 
   async function post(action: string, extra: Record<string, unknown>) {
     setBusy(true); setMsg(null);
@@ -69,14 +84,14 @@ export default function AdminUsersPage() {
     const data = await post("adjust_wallet", { user_id: modal.user.id, amount });
     if (data) {
       setMsg({ type: "ok", text: `New balance: ₦${data.new_balance.toLocaleString()}` });
-      load(search);
+      load(search, role);
     }
   }
 
   async function toggleAdmin(user: User) {
     if (!confirm(`${user.is_admin ? "Remove" : "Grant"} admin for ${user.email}?`)) return;
     const data = await post("toggle_admin", { user_id: user.id });
-    if (data) { load(search); }
+    if (data) { load(search, role); }
   }
 
   async function updateProfile() {
@@ -84,7 +99,7 @@ export default function AdminUsersPage() {
     const data = await post("update_profile", { user_id: modal.user.id, name: profName, email: profEmail });
     if (data) {
       setMsg({ type: "ok", text: "Profile updated." });
-      load(search);
+      load(search, role);
     }
   }
 
@@ -96,7 +111,7 @@ export default function AdminUsersPage() {
     const data = await post("disable_user", { user_id: user.id });
     if (data) {
       setMsg({ type: "ok", text: `Account ${data.is_disabled ? "disabled" : "enabled"}.` });
-      load(search);
+      load(search, role);
     }
   }
 
@@ -114,7 +129,7 @@ export default function AdminUsersPage() {
     // Store the user token and do a hard redirect so AuthContext re-initialises fully
     localStorage.setItem("tn_token", data.token);
     localStorage.setItem("tn_user", JSON.stringify(data.user));
-    window.location.href = "/dashboard";
+    window.location.assign("/dashboard");
   }
 
   return (
@@ -124,13 +139,20 @@ export default function AdminUsersPage() {
           <h1 className="text-[var(--text-primary)] text-2xl font-bold">Users</h1>
           <p className="text-gray-400 text-sm mt-1">{users.length} user{users.length !== 1 ? "s" : ""} found{totalPages > 1 ? ` · page ${page} of ${totalPages}` : ""}</p>
         </div>
-        <input
-          type="text"
-          placeholder="Search name or email…"
-          value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1); load(e.target.value); }}
-          className="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-green-500 w-64"
-        />
+        <div className="flex flex-wrap gap-2">
+          <select value={role} onChange={(e) => { const value = e.target.value as "" | "admin" | "user"; setRole(value); setPage(1); load(search, value); }} className="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-3 py-2.5 focus:outline-none focus:border-green-500">
+            <option value="">All roles</option>
+            <option value="admin">Admins</option>
+            <option value="user">Regular users</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Search name or email…"
+            value={search}
+            onChange={(e) => { setSearch(e.target.value); setPage(1); load(e.target.value, role); }}
+            className="bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm rounded-xl px-4 py-2.5 placeholder-gray-500 focus:outline-none focus:border-green-500 w-64 max-w-full"
+          />
+        </div>
       </div>
 
       <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl overflow-hidden">
@@ -208,35 +230,38 @@ export default function AdminUsersPage() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2">
+        <nav aria-label="User pagination" className="flex max-w-full items-center justify-center gap-1 overflow-hidden sm:gap-2">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-3 py-1.5 rounded-lg text-sm border border-[var(--border-color)] text-gray-400 hover:text-[var(--text-primary)] disabled:opacity-30 transition-colors"
+            className="shrink-0 px-2.5 py-1.5 rounded-lg text-xs border border-[var(--border-color)] text-gray-400 hover:text-[var(--text-primary)] disabled:opacity-30 transition-colors sm:px-3 sm:text-sm"
           >
-            ← Prev
+            <span className="sm:hidden">←</span><span className="hidden sm:inline">← Prev</span>
           </button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+          <div className="flex min-w-0 items-center justify-center gap-1">
+          {paginationItems(page, totalPages).map((item) => typeof item === "number" ? (
             <button
-              key={p}
-              onClick={() => setPage(p)}
-              className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                p === page
+              key={item}
+              onClick={() => setPage(item)}
+              aria-current={item === page ? "page" : undefined}
+              className={`h-8 min-w-8 rounded-lg px-2 text-xs transition-colors ${
+                item === page
                   ? "bg-green-500 text-white font-semibold"
                   : "border border-[var(--border-color)] text-gray-400 hover:text-[var(--text-primary)]"
               }`}
             >
-              {p}
+              {item}
             </button>
-          ))}
+          ) : <span key={item} className="w-4 text-center text-xs text-gray-500">…</span>)}
+          </div>
           <button
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-3 py-1.5 rounded-lg text-sm border border-[var(--border-color)] text-gray-400 hover:text-[var(--text-primary)] disabled:opacity-30 transition-colors"
+            className="shrink-0 px-2.5 py-1.5 rounded-lg text-xs border border-[var(--border-color)] text-gray-400 hover:text-[var(--text-primary)] disabled:opacity-30 transition-colors sm:px-3 sm:text-sm"
           >
-            Next →
+            <span className="sm:hidden">→</span><span className="hidden sm:inline">Next →</span>
           </button>
-        </div>
+        </nav>
       )}
 
       {/* Modal */}

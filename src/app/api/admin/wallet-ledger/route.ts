@@ -6,11 +6,12 @@ export async function GET(req: NextRequest) {
   const sp     = req.nextUrl.searchParams;
   const search = sp.get("search") ?? "";
   const type   = sp.get("type")   ?? "";
+  const source = sp.get("source") ?? "";
   const limit  = sp.get("limit")  ?? "200";
   const offset = sp.get("offset") ?? "0";
   const dateFrom = sp.get("date_from") ?? "";
   const dateTo   = sp.get("date_to")   ?? "";
-  const qs = new URLSearchParams({ search, type, date_from: dateFrom, date_to: dateTo, limit, offset }).toString();
+  const qs = new URLSearchParams({ search, type, source, date_from: dateFrom, date_to: dateTo, limit, offset }).toString();
   const auth   = req.headers.get("authorization") ?? "";
   const res    = await fetch(`${PHP}/admin/wallet-ledger.php?${qs}`, {
     headers: auth ? { Authorization: auth } : {},

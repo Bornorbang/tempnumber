@@ -11,7 +11,9 @@ function forwardHeaders(req: NextRequest): Record<string, string> {
 
 export async function GET(req: NextRequest) {
   const search = req.nextUrl.searchParams.get("search") ?? "";
-  const url = `${PHP}/admin/users.php${search ? `?search=${encodeURIComponent(search)}` : ""}`;
+  const role = req.nextUrl.searchParams.get("role") ?? "";
+  const qs = new URLSearchParams({ search, role }).toString();
+  const url = `${PHP}/admin/users.php?${qs}`;
   const res = await fetch(url, { headers: forwardHeaders(req) });
   const data = await res.json();
   return NextResponse.json(data, { status: res.status });
