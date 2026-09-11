@@ -8,8 +8,7 @@ const LINKS = {
     { label: "Long-term Rentals",  href: "/long-term-rentals" },
     { label: "Dedicated Numbers",  href: "/dedicated-numbers" },
     { label: "Temporary Email",    href: "/temporary-email" },
-    { label: "Resellers",          href: "/reseller" },
-    { label: "USA API Docs",       href: "/developers" },
+    { label: "API",                href: "/developers" },
   ],
   "Other Services": [
     { label: "Domain Registration", href: "https://portal.hostingnigeria.com/domainchecker.php" },
