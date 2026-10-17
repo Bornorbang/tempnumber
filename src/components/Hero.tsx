@@ -1,10 +1,14 @@
 "use client";
 
-import Image from "next/image";
+import { getImageProps } from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function Hero() {
+  const { props: hero } = getImageProps({
+    src: "/hero-image.png", alt: "USA phone numbers for SMS verification, paid in Naira",
+    width: 480, height: 560, sizes: "480px", loading: "eager",
+  });
   const { user, loading } = useAuth();
   const isAuthed = !loading && !!user;
   return (
@@ -77,14 +81,12 @@ export default function Hero() {
 
         {/* Right: Hero image */}
         <div className="hidden lg:flex justify-center lg:justify-end">
-          <Image
-            src="/hero-image.png"
-            alt="Get real non-VoIP USA phone numbers from Temp Number, receive SMS verification codes instantly, and pay directly in Naira"
-            width={480}
-            height={560}
-            className="w-full max-w-[480px] object-contain"
-            priority
-          />
+          <picture>
+            <source media="(min-width: 1024px)" srcSet={hero.srcSet} sizes={hero.sizes} />
+            <img alt={hero.alt} width={480} height={560} loading="eager" fetchPriority="high"
+              src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+              className="w-full max-w-[480px] object-contain" />
+          </picture>
         </div>
       </div>
     </section>

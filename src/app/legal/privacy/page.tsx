@@ -6,11 +6,11 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
     "Read Temp Number's Privacy Policy. Learn how we collect, use, and protect your personal data when you use our temporary USA virtual phone number service.",
-  alternates: { canonical: "https://tempnumber.ng/legal/privacy" },
+  alternates: { canonical: "https://www.tempnumber.ng/legal/privacy" },
   openGraph: {
     title: "Privacy Policy - Temp Number",
     description: "Read Temp Number's Privacy Policy. Learn how we collect, use, and protect your personal data.",
-    url: "https://tempnumber.ng/legal/privacy",
+    url: "https://www.tempnumber.ng/legal/privacy",
     type: "website",
   },
   twitter: {

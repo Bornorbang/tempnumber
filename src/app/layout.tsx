@@ -4,7 +4,6 @@ import Script from "next/script";
 import "./globals.css";
 import ThemeProvider from "@/components/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
-import GoogleAuthProvider from "@/components/GoogleAuthProvider";
 
 
 const inter = Inter({
@@ -20,13 +19,13 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://tempnumber.ng"),
+  metadataBase: new URL("https://www.tempnumber.ng"),
   title: {
     default: "Buy Temporary USA Phone Numbers in Naira - Temp Number",
     template: "%s - Temp Number",
   },
   description:
-    "Get a real, non-VOIP USA phone number for SMS verification in seconds. Pay in Naira — no foreign card needed. Instant OTP numbers for WhatsApp, Telegram, Gmail & 100+ services. From ₦450.",
+    "Get a real, non-VOIP USA phone number for SMS verification in seconds. Pay in Naira — no foreign card needed. Instant OTP numbers for WhatsApp, Telegram, Gmail & 100+ services. From ₦900.",
   keywords: [
     "temporary phone number Nigeria",
     "virtual phone number Nigeria",
@@ -41,7 +40,7 @@ export const metadata: Metadata = {
     "temporary number for verification",
     "SMS number pay Naira",
   ],
-  authors: [{ name: "Temp Number", url: "https://tempnumber.ng" }],
+  authors: [{ name: "Temp Number", url: "https://www.tempnumber.ng" }],
   creator: "Temp Number",
   publisher: "Temp Number",
   formatDetection: { email: false, address: false, telephone: false },
@@ -87,8 +86,8 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Temp Number",
-  url: "https://tempnumber.ng",
-  logo: "https://tempnumber.ng/updated-logo.png",
+  url: "https://www.tempnumber.ng",
+  logo: "https://www.tempnumber.ng/updated-logo.png",
   description:
     "Nigeria's leading temporary USA phone number service. Rent real, non-VOIP USA virtual numbers for SMS verification and pay in Naira.",
   email: "support@tempnumber.ng",
@@ -110,17 +109,10 @@ const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: "Temp Number",
-  url: "https://tempnumber.ng",
+  url: "https://www.tempnumber.ng",
   description:
-    "Rent temporary USA virtual phone numbers and pay in Naira. Instant SMS verification for any platform. Non-VOIP numbers from ₦450.",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: "https://tempnumber.ng/pricing?q={search_term_string}",
-    },
-    "query-input": "required name=search_term_string",
-  },
+    "Rent temporary USA virtual phone numbers and pay in Naira. Instant SMS verification for any platform. Non-VOIP numbers from ₦900.",
+
 };
 
 export default function RootLayout({
@@ -156,9 +148,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
         <ThemeProvider>
-          <GoogleAuthProvider>
             <AuthProvider>{children}</AuthProvider>
-          </GoogleAuthProvider>
         </ThemeProvider>
       </body>
     </html>

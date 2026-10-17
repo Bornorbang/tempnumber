@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -188,7 +189,9 @@ export default function ServicesAndCountries() {
 
               {/* Name */}
               <span className="flex-1 text-slate-900 dark:text-white font-semibold text-sm">
-                {service.name}
+                {["WhatsApp", "Telegram", "Google"].includes(service.name)
+                  ? <Link href={`/services/${service.name.toLowerCase()}`} className="hover:text-green-600 hover:underline">{service.name}</Link>
+                  : service.name}
               </span>
 
               {/* Rent button */}

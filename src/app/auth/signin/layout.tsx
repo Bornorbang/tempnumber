@@ -1,3 +1,4 @@
+import GoogleAuthProvider from "@/components/GoogleAuthProvider";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -6,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function SignInLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return <GoogleAuthProvider>{children}</GoogleAuthProvider>;
 }

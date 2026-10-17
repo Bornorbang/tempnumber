@@ -6,11 +6,11 @@ export const metadata: Metadata = {
   title: "Terms of Service",
   description:
     "Read the Terms of Service for Temp Number, Nigeria's trusted temporary USA virtual phone number and SMS verification service. Know your rights and responsibilities.",
-  alternates: { canonical: "https://tempnumber.ng/legal/terms" },
+  alternates: { canonical: "https://www.tempnumber.ng/legal/terms" },
   openGraph: {
     title: "Terms of Service - Temp Number",
     description: "Read the Terms of Service for Temp Number, Nigeria's trusted temporary USA virtual phone number service.",
-    url: "https://tempnumber.ng/legal/terms",
+    url: "https://www.tempnumber.ng/legal/terms",
     type: "website",
   },
   twitter: {

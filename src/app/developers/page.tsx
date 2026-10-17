@@ -7,7 +7,7 @@ import WholesalePrices from "@/components/WholesalePrices";
 export const metadata: Metadata = {
   title: "USA SMS Reseller API Documentation",
   description: "Integrate USA SMS verification into your platform with Temp Number's reseller API. API keys, Naira wallet billing, code examples and OpenAPI documentation.",
-  alternates: { canonical: "https://tempnumber.ng/developers" },
+  alternates: { canonical: "https://www.tempnumber.ng/developers" },
 };
 
 export default function DevelopersPage() {

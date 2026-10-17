@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   description:
     "Use a Temporary Email address to protect your real inbox. Learn about Temp Mail and disposable email addresses for quick, private sign-ups.",
   keywords: ["Temporary Email", "Temp Mail", "Disposable Email Address"],
-  alternates: { canonical: "https://tempnumber.ng/temporary-email" },
+  alternates: { canonical: "https://www.tempnumber.ng/temporary-email" },
   openGraph: {
     title: "Temporary Email & Temp Mail | Temp Number",
     description:
       "Keep your real inbox private with a temporary email and disposable email address for short-term online sign-ups.",
-    url: "https://tempnumber.ng/temporary-email",
+    url: "https://www.tempnumber.ng/temporary-email",
     siteName: "Temp Number",
     type: "website",
   },

@@ -4,12 +4,12 @@ export const metadata: Metadata = {
   title: "SMS Verification Reseller Program",
   description:
     "Launch your own SMS verification business with Temp Number's reseller program. Wholesale USA non-VOIP virtual numbers at lower prices, paid in Naira. White-label platform available.",
-  alternates: { canonical: "https://tempnumber.ng/reseller" },
+  alternates: { canonical: "https://www.tempnumber.ng/reseller" },
   openGraph: {
     title: "SMS Verification Reseller Program - Temp Number",
     description:
       "Resell temporary USA non-VOIP virtual numbers at wholesale prices in Naira. White-label SMS verification platform for Nigerian resellers.",
-    url: "https://tempnumber.ng/reseller",
+    url: "https://www.tempnumber.ng/reseller",
     type: "website",
   },
   twitter: {

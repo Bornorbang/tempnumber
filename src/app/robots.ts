@@ -15,7 +15,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: "https://tempnumber.ng/sitemap.xml",
-    host: "https://tempnumber.ng",
+    sitemap: "https://www.tempnumber.ng/sitemap.xml",
+    host: "https://www.tempnumber.ng",
   };
 }

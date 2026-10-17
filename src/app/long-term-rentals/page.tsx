@@ -15,12 +15,12 @@ export const metadata: Metadata = {
     "usa number 7 days naira",
     "long term sms number naira",
   ],
-  alternates: { canonical: "https://tempnumber.ng/long-term-rentals" },
+  alternates: { canonical: "https://www.tempnumber.ng/long-term-rentals" },
   openGraph: {
     title: "Long-term USA Phone Number Rentals — Pay in Naira | Temp Number",
     description:
       "Rent a USA phone number for 1, 3, 7, 14, or 30 days. Unlimited SMS for your chosen service. Pay in Naira.",
-    url: "https://tempnumber.ng/long-term-rentals",
+    url: "https://www.tempnumber.ng/long-term-rentals",
     siteName: "Temp Number",
     type: "website",
   },

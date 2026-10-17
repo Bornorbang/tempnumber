@@ -16,7 +16,7 @@ function Code({ children }: { children: string }) {
 
 const subscribeToOrigin = () => () => {};
 const getOrigin = () => window.location.origin;
-const getServerOrigin = () => "https://tempnumber.ng";
+const getServerOrigin = () => "https://www.tempnumber.ng";
 
 export default function UsaApiDocumentation() {
   const base = `${useSyncExternalStore(subscribeToOrigin, getOrigin, getServerOrigin)}/api/v1`;

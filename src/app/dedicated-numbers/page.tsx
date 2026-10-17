@@ -15,12 +15,12 @@ export const metadata: Metadata = {
     "dedicated phone number for verification",
     "usa number pay naira",
   ],
-  alternates: { canonical: "https://tempnumber.ng/dedicated-numbers" },
+  alternates: { canonical: "https://www.tempnumber.ng/dedicated-numbers" },
   openGraph: {
     title: "Dedicated USA Phone Numbers — Pay in Naira | Temp Number",
     description:
       "Your own exclusive USA phone number for 1 week, 2 weeks, or a month. Unlimited SMS. Pay in Naira.",
-    url: "https://tempnumber.ng/dedicated-numbers",
+    url: "https://www.tempnumber.ng/dedicated-numbers",
     siteName: "Temp Number",
     type: "website",
   },
