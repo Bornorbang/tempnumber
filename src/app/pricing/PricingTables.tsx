@@ -230,7 +230,6 @@ export default function PricingTables({ initialServices, initialGlobalProducts, 
                     >
                       <td className="px-5 py-2.5">
                         <p className="text-slate-900 dark:text-white font-medium text-xs">{s.service_name}</p>
-                        {s.multiple_sms === "true" && <p className="text-[10px] text-gray-400">Multi-SMS</p>}
                       </td>
                       <td className="px-4 py-2.5 text-right text-slate-500 dark:text-gray-400 text-xs">{s.ttl}m</td>
                       <td className="px-4 py-2.5 text-right">

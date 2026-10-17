@@ -70,7 +70,6 @@ export default async function ServiceGuide({ params }: { params: Promise<{ servi
       <section className="space-y-3"><h2 className="text-2xl font-semibold">Before you rent for {guide.name}</h2><p>{guide.details}</p><p>{guide.caution}</p><p>Use numbers only for activity permitted by the platform. Do not assume voice calls, repeated codes, or extended access are included; review the selected rental&apos;s terms.</p></section>
       <section className="space-y-4"><h2 className="text-2xl font-semibold">Questions about {guide.name} rentals</h2>{faqs.map(({ q, a }) => <div key={q}><h3 className="font-semibold mb-2">{q}</h3><p>{a}</p></div>)}</section>
       <Link className="inline-block rounded-xl bg-green-600 text-white px-5 py-3 font-semibold" href={`/dashboard/usa?rent=${encodeURIComponent(guide.name)}`}>Check {guide.name} availability</Link>
-      <nav aria-label="Related service guides" className="flex flex-wrap gap-4 text-green-600">{Object.entries(guides).filter(([key]) => key !== service).map(([key, item]) => <Link key={key} href={`/services/${key}`}>{item.name} verification guide</Link>)}</nav>
     </article>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
     <Footer />
