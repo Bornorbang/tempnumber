@@ -250,11 +250,6 @@ export default function LongTermPage() {
         </div>
 
         {actionError && <p role="alert" className="mb-4 rounded-xl bg-red-500/10 p-4 text-sm text-red-600 dark:text-red-400">{actionError}</p>}
-        <p className="mb-5 text-xs text-slate-500 dark:text-gray-400">
-          Auto-renew charges your wallet within 6 hours before expiry, only when funds are available.
-          Renewal prices follow the current exchange rate. Keep your wallet funded.
-          If payment cannot be collected before expiry, the number may be released.
-        </p>
 
         {/* Balance pill */}
         {user && (

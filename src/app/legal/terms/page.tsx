@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
 };
 
-const LAST_UPDATED = "20 July 2026";
+const LAST_UPDATED = "2 November 2026";
 
 export default function TermsPage() {
   return (
@@ -105,9 +105,10 @@ export default function TermsPage() {
                   time of rental.
                 </li>
                 <li>
-                  <strong>Auto-renew.</strong> If you enable auto-renew, your wallet will be charged the
-                  same rental price automatically before the number expires. If your wallet balance is
-                  insufficient at renewal time, auto-renew will be disabled and the number will expire.
+                  <strong>Auto-renew.</strong> Auto-renew charges your wallet within 6 hours before
+                  expiry, only when funds are available. Renewal prices follow the current exchange
+                  rate. Keep your wallet funded. If payment cannot be collected before expiry, the
+                  number may be released.
                   You can turn auto-renew on or off at any time from your dashboard.
                 </li>
                 <li>
