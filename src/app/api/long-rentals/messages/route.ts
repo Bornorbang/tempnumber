@@ -7,12 +7,10 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const number  = searchParams.get("number") ?? "";
-    const service = searchParams.get("service") ?? "";
+    const rentalId = searchParams.get("rental_id") ?? "";
 
     const url = new URL(`${PHP}/long-rentals/messages.php`);
-    url.searchParams.set("number", number);
-    if (service) url.searchParams.set("service", service);
+    url.searchParams.set("rental_id", rentalId);
 
     const res = await fetch(url.toString(), {
       headers: { Authorization: req.headers.get("authorization") ?? "" },

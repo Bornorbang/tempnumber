@@ -217,33 +217,33 @@ export const longRentalsApi = {
   list: () =>
     apiFetch<LongRental[]>("/long-rentals/index.php"),
 
-  create: (data: { service: string; period: string; auto_renew: boolean; price_usd: number; price_ngn: number }) =>
+  create: (data: { service: string; period: string; auto_renew: boolean; expected_price_ngn: number; request_key: string }) =>
     apiFetch<{ rental: LongRental; price_ngn: number; new_balance: number }>("/long-rentals/index.php", {
       method: "POST",
       body: JSON.stringify(data),
     }),
 
-  cancel: (number: string, service?: string) =>
+  cancel: (rentalId: number) =>
     apiFetch<{ status: string }>("/long-rentals/cancel.php", {
       method: "POST",
-      body: JSON.stringify({ number, ...(service ? { service } : {}) }),
+      body: JSON.stringify({ rental_id: rentalId }),
     }),
 
-  renew: (number: string, service?: string) =>
+  renew: (rentalId: number, expectedPrice: number, requestKey: string) =>
     apiFetch<{ rental: LongRental; new_balance: number }>("/long-rentals/renew.php", {
       method: "POST",
-      body: JSON.stringify({ number, ...(service ? { service } : {}) }),
+      body: JSON.stringify({ rental_id: rentalId, expected_price_ngn: expectedPrice, request_key: requestKey }),
     }),
 
-  messages: (number: string, service?: string) =>
+  messages: (rentalId: number) =>
     apiFetch<{ messages: LongRentalMessage[] }>(
-      `/long-rentals/messages.php?number=${encodeURIComponent(number)}${service ? `&service=${encodeURIComponent(service)}` : ""}`
+      `/long-rentals/messages.php?rental_id=${rentalId}`
     ),
 
-  setAutoRenew: (number: string, autoRenew: boolean, service?: string) =>
+  setAutoRenew: (rentalId: number, autoRenew: boolean) =>
     apiFetch<{ auto_renew: boolean }>("/long-rentals/auto-renew.php", {
       method: "POST",
-      body: JSON.stringify({ number, auto_renew: autoRenew, ...(service ? { service } : {}) }),
+      body: JSON.stringify({ rental_id: rentalId, auto_renew: autoRenew }),
     }),
 };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { longRentalsApi, ApiError, type LongRentalService, type LongRental, type LongRentalMessage } from "@/lib/api";
 
@@ -38,11 +38,17 @@ export default function LongTermPage() {
   // My rentals
   const [rentals, setRentals]       = useState<LongRental[]>([]);
   const [loadingRentals, setLoadingRentals] = useState(false);
+  const [page, setPage] = useState(1);
 
   // Rent modal
-  const [rentTarget, setRentTarget] = useState<{ svc: LongRentalService; period: string; priceUsd: number; priceNgn: number } | null>(null);
+  const [rentTarget, setRentTarget] = useState<{ svc: LongRentalService; period: string; priceNgn: number; requestKey: string } | null>(null);
   const [renting, setRenting]       = useState(false);
   const [autoRenew, setAutoRenew]   = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [pricesError, setPricesError] = useState(false);
+  const [messagesError, setMessagesError] = useState(false);
+  const renewKeys = useRef<Record<number, string>>({});
+  const submitting = useRef(false);
 
   // Disabled modal
   const [showDisabledModal, setShowDisabledModal] = useState(false);
@@ -59,7 +65,7 @@ export default function LongTermPage() {
   useEffect(() => {
     longRentalsApi.prices()
       .then((d) => setServices((d.services ?? []).slice().sort((a, b) => a.service_name.localeCompare(b.service_name))))
-      .catch(() => setServices([]))
+      .catch(() => { setServices([]); setPricesError(true); })
       .finally(() => setLoadingPrices(false));
   }, []);
 
@@ -69,16 +75,17 @@ export default function LongTermPage() {
     try {
       const rows = await longRentalsApi.list();
       setRentals(Array.isArray(rows) ? rows : []);
+      setPage(1);
     } catch {
       addToast("error", "Could not load rentals");
     } finally {
       setLoadingRentals(false);
     }
-  }, []);
+  }, [addToast]);
 
   useEffect(() => {
-    if (tab === "my") fetchRentals();
-  }, [tab]);
+    if (tab === "my") void Promise.resolve().then(fetchRentals);
+  }, [tab, fetchRentals]);
 
   // ── Open rent modal ───────────────────────────────────────────────────────────
   function openRent(svc: LongRentalService, period: string) {
@@ -88,29 +95,37 @@ export default function LongTermPage() {
     }
     const p = svc.prices.find((x) => x.period === period);
     if (!p) return;
-    setRentTarget({ svc, period, priceUsd: parseFloat(p.cost), priceNgn: p.price_ngn });
+    setRentTarget({ svc, period, priceNgn: p.price_ngn, requestKey: crypto.randomUUID() });
+    setActionError(null);
     setAutoRenew(false);
   }
 
   // ── Confirm rent ──────────────────────────────────────────────────────────────
   async function confirmRent() {
-    if (!rentTarget) return;
+    if (!rentTarget || submitting.current) return;
+    submitting.current = true;
+    setActionError(null);
     setRenting(true);
     try {
       const res = await longRentalsApi.create({
         service:    rentTarget.svc.api_name,
         period:     rentTarget.period,
         auto_renew: autoRenew,
-        price_usd:  rentTarget.priceUsd,
-        price_ngn:  rentTarget.priceNgn,
+        expected_price_ngn: rentTarget.priceNgn,
+        request_key: rentTarget.requestKey,
       });
       addToast("success", "Number rented!", `${res.rental.number} · ₦${rentTarget.priceNgn.toLocaleString()} deducted`);
       setRentTarget(null);
       await refreshUser();
       if (tab === "my") fetchRentals();
     } catch (e) {
-      addToast("error", "Rent failed", e instanceof ApiError ? e.message : "Please try again.");
+      setActionError(e instanceof Error ? e.message : "Could not confirm the rental. Contact support before retrying.");
+      if (e instanceof ApiError && [402, 403, 404, 422].includes(e.status ?? 0)) {
+        setRentTarget((current) => current ? { ...current, requestKey: crypto.randomUUID() } : null);
+      }
+      await refreshUser();
     } finally {
+      submitting.current = false;
       setRenting(false);
     }
   }
@@ -118,55 +133,75 @@ export default function LongTermPage() {
   // ── Auto-renew toggle ──────────────────────────────────────────────────────────
   async function handleAutoRenew(rental: LongRental) {
     const next = !rental.auto_renew;
-    setActionLoading((s) => ({ ...s, [`ar-${rental.number}`]: true }));
+    setActionLoading((s) => ({ ...s, [`ar-${rental.id}`]: true }));
     try {
-      await longRentalsApi.setAutoRenew(rental.number, next, rental.api_name);
-      setRentals((r) => r.map((x) => x.number === rental.number ? { ...x, auto_renew: next } : x));
+      await longRentalsApi.setAutoRenew(rental.id, next);
+      setRentals((r) => r.map((x) => x.id === rental.id ? { ...x, auto_renew: next } : x));
       addToast("success", next ? "Auto-renew enabled" : "Auto-renew disabled");
     } catch (e) {
       addToast("error", "Failed to update auto-renew", e instanceof ApiError ? e.message : "Please try again.");
     } finally {
-      setActionLoading((s) => ({ ...s, [`ar-${rental.number}`]: false }));
+      setActionLoading((s) => ({ ...s, [`ar-${rental.id}`]: false }));
     }
   }
 
   // ── Renew ─────────────────────────────────────────────────────────────────────
   async function handleRenew(rental: LongRental) {
+    if (submitting.current) return;
     if (!confirm(`Renew ${rental.number}? ₦${rental.price_ngn.toLocaleString()} will be deducted.`)) return;
-    setActionLoading((s) => ({ ...s, [`renew-${rental.number}`]: true }));
+    submitting.current = true;
+    setActionError(null);
+    const requestKey = renewKeys.current[rental.id] ??= crypto.randomUUID();
+    setActionLoading((s) => ({ ...s, [`renew-${rental.id}`]: true }));
     try {
-      const res = await longRentalsApi.renew(rental.number, rental.api_name);
+      const res = await longRentalsApi.renew(rental.id, rental.price_ngn, requestKey);
+      delete renewKeys.current[rental.id];
       addToast("success", "Renewed!", `Expires ${res.rental.end_time}`);
       await refreshUser();
       fetchRentals();
     } catch (e) {
-      addToast("error", "Renew failed", e instanceof ApiError ? e.message : "Please try again.");
+      setActionError(e instanceof Error ? e.message : "Could not confirm renewal. Contact support before retrying.");
+      // Definitive rejection released the reservation. An unknown outcome keeps
+      // its key so another click cannot send the provider a second renewal.
+      if (e instanceof ApiError && [402, 403, 404, 422].includes(e.status ?? 0)) delete renewKeys.current[rental.id];
+      await refreshUser();
     } finally {
-      setActionLoading((s) => ({ ...s, [`renew-${rental.number}`]: false }));
+      submitting.current = false;
+      setActionLoading((s) => ({ ...s, [`renew-${rental.id}`]: false }));
     }
   }
 
   // ── Messages ──────────────────────────────────────────────────────────────────
-  async function openMessages(rental: LongRental) {
+  function openMessages(rental: LongRental) {
     setMsgTarget(rental);
     setMessages([]);
     setLoadingMsgs(true);
-    try {
-      const res = await longRentalsApi.messages(rental.number, rental.api_name);
-      setMessages(res.messages ?? []);
-    } catch {
-      addToast("error", "Could not load messages");
-    } finally {
-      setLoadingMsgs(false);
-    }
+    setMessagesError(false);
   }
+
+  useEffect(() => {
+    if (!msgTarget) return;
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout>;
+    async function poll() {
+      try {
+        const res = await longRentalsApi.messages(msgTarget!.id);
+        if (!stopped) { setMessages(res.messages ?? []); setMessagesError(false); }
+      } catch {
+        if (!stopped) setMessagesError(true);
+      } finally {
+        if (!stopped) {
+          setLoadingMsgs(false);
+          timer = setTimeout(poll, 15000);
+        }
+      }
+    }
+    void poll();
+    return () => { stopped = true; clearTimeout(timer); };
+  }, [msgTarget]);
 
   // ── Helpers ───────────────────────────────────────────────────────────────────
   const PAGE_SIZE = 15;
-  const [page, setPage] = useState(1);
-
-  // Reset to page 1 whenever rentals list changes
-  useEffect(() => { setPage(1); }, [rentals]);
 
   const activeRentals   = rentals.filter((r) => r.status === "Active");
   const inactiveRentals = rentals.filter((r) => r.status !== "Active");
@@ -183,6 +218,7 @@ export default function LongTermPage() {
     const order = ["1d", "3d", "7d", "14d", "30d"];
     return order.indexOf(a) - order.indexOf(b);
   });
+  const selectedPeriod = availablePeriods.includes(selPeriod) ? selPeriod : availablePeriods[0];
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
@@ -212,6 +248,13 @@ export default function LongTermPage() {
             Rent USA number for a specific service over days or weeks. Receive all incoming SMS for that service on your number.
           </p>
         </div>
+
+        {actionError && <p role="alert" className="mb-4 rounded-xl bg-red-500/10 p-4 text-sm text-red-600 dark:text-red-400">{actionError}</p>}
+        <p className="mb-5 text-xs text-slate-500 dark:text-gray-400">
+          Auto-renew charges your wallet within 6 hours before expiry, only when funds are available.
+          Renewal prices follow the current exchange rate. Keep your wallet funded.
+          If payment cannot be collected before expiry, the number may be released.
+        </p>
 
         {/* Balance pill */}
         {user && (
@@ -251,7 +294,7 @@ export default function LongTermPage() {
                     key={p}
                     onClick={() => setSelPeriod(p)}
                     className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-all ${
-                      selPeriod === p
+                      selectedPeriod === p
                         ? "bg-green-500 text-white border-green-500"
                         : "border-slate-200 dark:border-white/10 text-slate-600 dark:text-gray-300 hover:border-green-400"
                     }`}
@@ -270,13 +313,12 @@ export default function LongTermPage() {
               </div>
             ) : services.length === 0 ? (
               <div className="text-center py-16 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl">
-                <p className="text-slate-500 dark:text-gray-400 text-sm font-medium">Service long rentals coming soon.</p>
-                <p className="text-slate-400 dark:text-gray-500 text-xs mt-1">This feature will be available shortly.</p>
+                <p className="text-slate-500 dark:text-gray-400 text-sm font-medium">{pricesError ? "Pricing is temporarily unavailable. Refresh to try again." : "No long-term services are available right now."}</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {services.map((svc) => {
-                  const price = svc.prices.find((p) => p.period === selPeriod);
+                  const price = svc.prices.find((p) => p.period === selectedPeriod);
                   if (!price) return null;
                   return (
                     <div
@@ -285,13 +327,13 @@ export default function LongTermPage() {
                     >
                       <div>
                         <p className="font-semibold text-[var(--text-primary)] text-sm">{svc.service_name}</p>
-                        <p className="text-gray-400 text-xs mt-0.5">{PERIOD_LABELS[selPeriod] ?? selPeriod}</p>
+                        <p className="text-gray-400 text-xs mt-0.5">{PERIOD_LABELS[selectedPeriod] ?? selectedPeriod}</p>
                       </div>
                       <p className="text-green-500 font-bold text-base">
                         ₦{price.price_ngn.toLocaleString()}
                       </p>
                       <button
-                        onClick={() => openRent(svc, selPeriod)}
+                        onClick={() => openRent(svc, selectedPeriod)}
                         className="w-full bg-green-500 hover:bg-green-400 text-white text-xs font-semibold py-2 rounded-lg transition-colors"
                       >
                         Rent
@@ -412,7 +454,7 @@ export default function LongTermPage() {
             {/* Auto-renew toggle */}
             <label className="flex items-center gap-3 mb-5 cursor-pointer">
               <div
-                onClick={() => setAutoRenew((v) => !v)}
+                onClick={() => { if (!renting) setAutoRenew((v) => !v); }}
                 className={`relative w-10 h-5 rounded-full transition-colors flex-shrink-0 ${autoRenew ? "bg-green-500" : "bg-slate-200 dark:bg-white/10"}`}
               >
                 <span
@@ -439,6 +481,7 @@ export default function LongTermPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setRentTarget(null)}
+                disabled={renting}
                 className="flex-1 py-2.5 rounded-xl border border-[var(--border-color)] text-[var(--text-primary)] text-sm font-medium hover:bg-slate-50 dark:hover:bg-white/5 transition-colors"
               >
                 Cancel
@@ -459,6 +502,7 @@ export default function LongTermPage() {
                 ) : "Confirm & Rent"}
               </button>
             </div>
+            {actionError && <p role="alert" className="mt-3 text-sm text-red-500">{actionError}</p>}
           </div>
         </div>
       )}
@@ -482,6 +526,8 @@ export default function LongTermPage() {
               </button>
             </div>
             <div className="max-h-80 overflow-y-auto p-4 space-y-3">
+              <p className="text-xs text-slate-400">Messages update automatically every 15 seconds.</p>
+              {messagesError && <p role="status" className="text-xs text-red-500">Could not refresh messages. Retrying automatically.</p>}
               {loadingMsgs ? (
                 <div className="flex items-center justify-center py-8">
                   <svg className="w-6 h-6 animate-spin text-green-500" fill="none" viewBox="0 0 24 24">
@@ -541,8 +587,8 @@ function RentalCard({
   disabled?: boolean;
 }) {
   const isActive    = rental.status === "Active";
-  const renewing    = loading[`renew-${rental.number}`];
-  const togglingAR  = loading[`ar-${rental.number}`];
+  const renewing    = loading[`renew-${rental.id}`];
+  const togglingAR  = loading[`ar-${rental.id}`];
 
   return (
     <div className={`bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-4 ${disabled ? "opacity-50" : ""}`}>
